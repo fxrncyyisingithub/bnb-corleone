@@ -11,6 +11,7 @@ type Dict = {
   home: string;
   camere: string;
   cosaVisitare: string;
+  location: string;
   contatti: string;
   prenotaOra: string;
   openMenu: string;
@@ -35,9 +36,10 @@ export default function Header({
       { href: `/${lang}`, label: dict.home },
       { href: `/${lang}/camere`, label: dict.camere },
       { href: `/${lang}/cosa-visitare`, label: dict.cosaVisitare },
+      { href: `/${lang}/location`, label: dict.location },
       { href: `/${lang}/contatti`, label: dict.contatti },
     ],
-    [lang, dict.home, dict.camere, dict.cosaVisitare, dict.contatti]
+    [lang, dict.home, dict.camere, dict.cosaVisitare, dict.location, dict.contatti]
   );
 
   const pathWithoutLang =
