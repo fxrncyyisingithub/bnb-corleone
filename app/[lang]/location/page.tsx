@@ -1,27 +1,37 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
+import { getDictionary } from "@/lib/dictionary";
+import { isLocale } from "@/lib/locales";
+import { notFound } from "next/navigation";
 import MobileLocation from "@/app/components/mobile/Location";
 
-export const metadata: Metadata = {
-  title: "Location",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = isLocale(lang) ? lang : "it";
+  const dict = await getDictionary(locale);
+  return { title: dict.location.title };
+}
 
-export default async function Location() {
+export default async function Location({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+
+  const dict = await getDictionary(lang);
   const deviceType = await getRequestDeviceType();
 
   if (isMobileDevice(deviceType)) {
-    return <MobileLocation />;
+    return <MobileLocation dict={dict.location} />;
   }
 
   return (
     <div className="flex-grow w-full max-w-container-max mx-auto px-margin-desktop py-20 flex flex-col gap-10 min-h-[80vh]">
       <section className="flex flex-col gap-4">
-        <h1 className="text-headline-lg font-bold text-primary">Location</h1>
+        <h1 className="text-headline-lg font-bold text-primary">{dict.location.title}</h1>
       </section>
 
       <div className="text-center">
         <p className="text-body-lg text-primary font-semibold">
-          Ci troviamo nel cuore di Corleone, a Via Santa Lucia 24
+          {dict.location.address}
         </p>
       </div>
 

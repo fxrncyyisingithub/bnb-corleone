@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { roomId, checkIn, checkOut, adults, bambini, name, email, phone } = parsed.data
+    const { roomId, checkIn, checkOut, adults, bambini, name, email, phone, locale } = parsed.data
     const supabase = await createClient()
 
     const { data: room, error: roomError } = await supabase
@@ -86,8 +86,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success/{CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL}/camere/${room.slug}`,
+      success_url: `${process.env.NEXT_PUBLIC_URL}/${locale}/success/{CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_URL}/${locale}/camere/${room.slug}`,
       customer_email: email,
       metadata: {
         roomId,

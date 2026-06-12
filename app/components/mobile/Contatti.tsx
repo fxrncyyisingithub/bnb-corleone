@@ -2,13 +2,19 @@ import { CONTACTS } from "@/lib/contacts"
 import WhatsAppIcon from "@/app/components/WhatsAppIcon"
 import { User } from "lucide-react"
 
-export default function MobileContatti() {
+type Dict = {
+  title: string
+  description: string
+  cta: string
+}
+
+export default function MobileContatti({ dict }: { dict: Dict }) {
   return (
     <div className="flex-grow w-full px-margin-mobile py-10 flex flex-col gap-8">
       <section className="flex flex-col gap-3">
-        <h1 className="text-headline-lg-mobile font-bold text-primary">Contatti</h1>
+        <h1 className="text-headline-lg-mobile font-bold text-primary">{dict.title}</h1>
         <p className="text-body-md text-secondary">
-          Scrivici su WhatsApp per informazioni o assistenza durante il soggiorno.
+          {dict.description}
         </p>
       </section>
 
@@ -31,7 +37,7 @@ export default function MobileContatti() {
               className="flex items-center justify-center gap-2 w-full py-4 bg-primary text-on-primary text-body-md font-semibold active:scale-95 transition-transform"
             >
               <WhatsAppIcon />
-              Contatta su WhatsApp
+              {dict.cta}
             </a>
           </section>
         ))}

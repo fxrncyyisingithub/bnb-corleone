@@ -1,16 +1,23 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { RoomListItem } from "@/lib/rooms"
+import type { Locale } from "@/lib/locales"
 
-export default function MobileCamere({ rooms }: { rooms: RoomListItem[] }) {
+type Dict = {
+  subtitle: string
+  description: string
+  cta: string
+}
+
+export default function MobileCamere({ rooms, dict, lang }: { rooms: RoomListItem[]; dict: Dict; lang: Locale }) {
   return (
     <div className="flex-grow pb-16 px-margin-mobile w-full pt-8">
       <div className="mb-10">
         <h1 className="text-headline-lg-mobile text-primary font-bold mb-2">
-          Seleziona la tua camera
+          {dict.subtitle}
         </h1>
         <p className="text-body-md text-secondary">
-          Scopri le nostre soluzioni esclusive per un soggiorno indimenticabile a Corleone.
+          {dict.description}
         </p>
       </div>
 
@@ -31,10 +38,10 @@ export default function MobileCamere({ rooms }: { rooms: RoomListItem[] }) {
             <div className="flex flex-col gap-4">
               <h2 className="text-headline-md font-semibold text-primary">{room.name}</h2>
               <Link
-                href={`/camere/${room.slug}`}
+                href={`/${lang}/camere/${room.slug}`}
                 className="block w-full bg-primary text-on-primary text-body-md font-semibold uppercase tracking-widest py-4 active:scale-95 transition-transform text-center"
               >
-                Prenota Ora
+                {dict.cta}
               </Link>
             </div>
           </article>

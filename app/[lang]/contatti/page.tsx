@@ -1,25 +1,35 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { CONTACTS } from "@/lib/contacts";
 import WhatsAppIcon from "@/app/components/WhatsAppIcon";
 import { User } from "lucide-react";
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
+import { getDictionary } from "@/lib/dictionary";
+import { isLocale } from "@/lib/locales";
+import { notFound } from "next/navigation";
 import MobileContatti from "@/app/components/mobile/Contatti";
 
-export const metadata: Metadata = {
-  title: "Contatti",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = isLocale(lang) ? lang : "it";
+  const dict = await getDictionary(locale);
+  return { title: dict.contatti.title };
+}
 
-export default async function Contatti() {
+export default async function Contatti({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+
+  const dict = await getDictionary(lang);
   const deviceType = await getRequestDeviceType();
 
   if (isMobileDevice(deviceType)) {
-    return <MobileContatti />;
+    return <MobileContatti dict={dict.contatti} />;
   }
 
   return (
     <div className="flex-grow w-full max-w-container-max mx-auto px-margin-desktop py-20 flex flex-col gap-10">
       <section className="flex flex-col gap-4">
-        <h1 className="text-headline-lg font-bold text-primary">Contatti</h1>
+        <h1 className="text-headline-lg font-bold text-primary">{dict.contatti.title}</h1>
       </section>
 
       <div className="grid grid-cols-2 gap-6">
@@ -44,7 +54,7 @@ export default async function Contatti() {
                 className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity"
               >
                 <WhatsAppIcon />
-                Contatta su WhatsApp
+                {dict.contatti.cta}
               </a>
             </div>
           </section>

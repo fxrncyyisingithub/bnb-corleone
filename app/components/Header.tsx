@@ -1,33 +1,67 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { localeLabels } from "@/lib/locales";
+import type { Locale } from "@/lib/locales";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/camere", label: "Camere" },
-  { href: "/cosa-visitare", label: "Cosa Visitare" },
-  { href: "/contatti", label: "Contatti" },
-];
+type Dict = {
+  home: string;
+  camere: string;
+  cosaVisitare: string;
+  contatti: string;
+  prenotaOra: string;
+  openMenu: string;
+  closeMenu: string;
+};
 
-export default function Header() {
+export default function Header({
+  lang,
+  dict,
+}: {
+  lang: Locale;
+  dict: Dict;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
 
-  const moveTo = useCallback((href: string | null) => {
-    const target = href || navLinks.find((l) => l.href === pathname)?.href;
-    const el = target ? linkRefs.current.get(target) : null;
-    if (el && navRef.current) {
-      const parentRect = navRef.current.getBoundingClientRect();
-      const elRect = el.getBoundingClientRect();
-      setIndicator({ left: elRect.left - parentRect.left, width: elRect.width });
-    }
-  }, [pathname]);
+  const navLinks = useMemo(
+    () => [
+      { href: `/${lang}`, label: dict.home },
+      { href: `/${lang}/camere`, label: dict.camere },
+      { href: `/${lang}/cosa-visitare`, label: dict.cosaVisitare },
+      { href: `/${lang}/contatti`, label: dict.contatti },
+    ],
+    [lang, dict.home, dict.camere, dict.cosaVisitare, dict.contatti]
+  );
+
+  const pathWithoutLang =
+    "/" + pathname.split("/").slice(2).join("/");
+
+  const moveTo = useCallback(
+    (href: string | null) => {
+      const target = href || navLinks.find((l) => l.href === pathname)?.href;
+      const el = target ? linkRefs.current.get(target) : null;
+      if (el && navRef.current) {
+        const parentRect = navRef.current.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        setIndicator((prev) => {
+          const next = {
+            left: elRect.left - parentRect.left,
+            width: elRect.width,
+          };
+          if (prev.left === next.left && prev.width === next.width) return prev;
+          return next;
+        });
+      }
+    },
+    [pathname, navLinks]
+  );
 
   useEffect(() => {
     moveTo(null);
@@ -44,23 +78,43 @@ export default function Header() {
     };
   }, [menuOpen]);
 
+  const locales: Locale[] = ["it", "en", "de"];
+
   return (
     <>
       <header className="bg-surface fixed top-0 w-full z-50 flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop border-b border-outline-variant">
         <Link
-          href="/"
+          href={`/${lang}`}
           className="text-headline-md font-bold text-primary tracking-tighter"
         >
           CORLEONE GUESTHOUSE
         </Link>
 
-        <button
-          className="md:hidden text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Apri menu"
-        >
-          <Menu className="w-6 h-6" aria-hidden />
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-1">
+            {locales.map((l) => (
+              <Link
+                key={l}
+                href={pathWithoutLang === "/" ? `/${l}` : `/${l}${pathWithoutLang}`}
+                className={`px-2 py-1 text-label-sm uppercase tracking-widest transition-colors ${
+                  l === lang
+                    ? "text-primary font-semibold"
+                    : "text-secondary hover:text-primary"
+                }`}
+              >
+                {l}
+              </Link>
+            ))}
+          </div>
+
+          <button
+            className="md:hidden text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
+            onClick={() => setMenuOpen(true)}
+            aria-label={dict.openMenu}
+          >
+            <Menu className="w-6 h-6" aria-hidden />
+          </button>
+        </div>
 
         <nav ref={navRef} className="hidden md:flex gap-8 items-center relative">
           {navLinks.map((link) => (
@@ -86,10 +140,10 @@ export default function Header() {
             style={{ left: indicator.left, width: indicator.width }}
           />
           <Link
-            href="/camere"
+            href={`/${lang}/camere`}
             className="bg-primary text-on-primary px-6 py-3 text-label-sm uppercase tracking-widest hover:opacity-70 transition-opacity duration-300"
           >
-            Prenota Ora
+            {dict.prenotaOra}
           </Link>
         </nav>
       </header>
@@ -106,7 +160,7 @@ export default function Header() {
           <button
             className="text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
             onClick={() => setMenuOpen(false)}
-            aria-label="Chiudi menu"
+            aria-label={dict.closeMenu}
           >
             <X className="w-6 h-6" aria-hidden />
           </button>
@@ -129,13 +183,30 @@ export default function Header() {
           ))}
         </nav>
 
+        <div className="flex justify-center gap-4 py-6 border-t border-outline-variant">
+          {locales.map((l) => (
+            <Link
+              key={l}
+              href={pathWithoutLang === "/" ? `/${l}` : `/${l}${pathWithoutLang}`}
+              onClick={() => setMenuOpen(false)}
+              className={`px-3 py-1 text-label-sm uppercase tracking-widest transition-colors ${
+                l === lang
+                  ? "text-primary font-semibold border-b border-primary"
+                  : "text-secondary hover:text-primary"
+              }`}
+            >
+              {localeLabels[l]}
+            </Link>
+          ))}
+        </div>
+
         <div className="mt-auto pt-8">
           <Link
-            href="/camere"
+            href={`/${lang}/camere`}
             onClick={() => setMenuOpen(false)}
             className="block w-full py-4 bg-primary text-on-primary text-center text-label-sm uppercase tracking-widest hover:opacity-90 transition-opacity"
           >
-            Prenota Ora
+            {dict.prenotaOra}
           </Link>
         </div>
       </div>

@@ -2,6 +2,7 @@ import BookingForm from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
 import { PRICE_PER_ADULT } from "@/lib/constants"
 import { User, CreditCard } from "lucide-react"
+import type { Locale } from "@/lib/locales"
 
 type Room = {
   id: string
@@ -10,38 +11,70 @@ type Room = {
   capacity: number
 }
 
+type Dict = {
+  cameraLabel: string
+  maxGuestsMobile: string
+  pricePerPerson: string
+  title: string
+}
+
+type BookingDict = {
+  adulti: string
+  bambini: string
+  nome: string
+  telefono: string
+  email: string
+  dateError: string
+  payNow: string
+  waiting: string
+  childrenFree: string
+  nights: string
+  adultiLabel: string
+  connectionError: string
+  checkoutError: string
+  priceLine: string
+  childLabel: string
+  childLabelPlural: string
+}
+
 export default function MobileRoomDetail({
   room,
   images,
   bookedDates,
+  roomDict,
+  bookingDict,
+  lang,
 }: {
   room: Room
   images: string[]
   bookedDates: string[]
+  roomDict: Dict
+  bookingDict: BookingDict
+  lang: Locale
 }) {
   return (
     <div className="flex-grow pb-20 px-margin-mobile w-full pt-6">
       <ImageGallery images={images} name={room.name} />
       <h1 className="text-headline-md font-bold text-primary mb-3 mt-6">
-        Camera {room.name}
+        {roomDict.cameraLabel} {room.name}
       </h1>
 
       <div className="flex flex-col gap-3 border-y border-outline-variant py-4 mb-8">
         <div className="flex items-center gap-2 text-secondary">
           <User className="w-5 h-5" aria-hidden />
-          <span className="text-body-md font-semibold">Max {room.capacity} ospiti</span>
+          <span className="text-body-md font-semibold">{roomDict.maxGuestsMobile.replace("{capacity}", String(room.capacity))}</span>
         </div>
         <div className="flex items-center gap-2 text-secondary">
           <CreditCard className="w-5 h-5" aria-hidden />
           <span className="text-body-md font-semibold">
-            €{PRICE_PER_ADULT} a persona / notte
+            {roomDict.pricePerPerson.replace("{price}", String(PRICE_PER_ADULT))}
           </span>
         </div>
       </div>
 
       <div className="bg-surface-container-lowest border border-outline-variant p-3 min-w-0">
-        <h2 className="text-[22px] font-semibold text-primary mb-6">Prenota Ora</h2>
-        <BookingForm room={room} bookedDates={bookedDates} />
+        <h2 className="text-[22px] font-semibold text-primary mb-6">{roomDict.title}</h2>
+        <BookingForm room={room} bookedDates={bookedDates} dict={bookingDict} lang={lang} />
       </div>
     </div>
   )

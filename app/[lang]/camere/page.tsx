@@ -1,30 +1,40 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getRooms } from "@/lib/rooms";
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
+import { getDictionary } from "@/lib/dictionary";
+import { isLocale } from "@/lib/locales";
+import { notFound } from "next/navigation";
 import MobileCamere from "@/app/components/mobile/Camere";
 
-export const metadata: Metadata = {
-  title: "Camere",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = isLocale(lang) ? lang : "it";
+  const dict = await getDictionary(locale);
+  return { title: dict.camere.title };
+}
 
-export default async function Camere() {
+export default async function Camere({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+
+  const dict = await getDictionary(lang);
   const rooms = await getRooms();
   const deviceType = await getRequestDeviceType();
 
   if (isMobileDevice(deviceType)) {
-    return <MobileCamere rooms={rooms} />;
+    return <MobileCamere rooms={rooms} dict={dict.camere} lang={lang} />;
   }
 
   return (
     <div className="flex-grow pb-16 px-margin-desktop max-w-container-max mx-auto w-full pt-20">
       <div className="mb-12">
         <h1 className="text-headline-lg text-primary font-bold mb-2">
-          Seleziona la tua camera
+          {dict.camere.subtitle}
         </h1>
         <p className="text-body-md text-secondary">
-          Scopri le nostre soluzioni esclusive per un soggiorno indimenticabile a Corleone.
+          {dict.camere.description}
         </p>
       </div>
 
@@ -48,10 +58,10 @@ export default async function Camere() {
               </h2>
               <div className="mt-auto pt-4">
                 <Link
-                  href={`/camere/${room.slug}`}
+                  href={`/${lang}/camere/${room.slug}`}
                   className="block w-full bg-primary text-on-primary text-body-md font-semibold uppercase tracking-widest py-3 hover:opacity-70 transition-opacity duration-300 text-center"
                 >
-                  Prenota Ora
+                  {dict.camere.cta}
                 </Link>
               </div>
             </div>

@@ -1,8 +1,17 @@
 import Image from "next/image"
 import Link from "next/link"
 import hero from "@/immagini/corleone.png"
+import type { Locale } from "@/lib/locales"
 
-export default function MobileHome() {
+type Dict = {
+  heroTitle: string
+  heroDescription: string
+  heroCta: string
+  sectionTitle: string
+  sectionDescription: string
+}
+
+export default function MobileHome({ dict, lang }: { dict: Dict; lang: Locale }) {
   return (
     <>
       <section className="relative h-[85vh] w-full flex flex-col justify-end p-margin-mobile">
@@ -19,16 +28,16 @@ export default function MobileHome() {
 
         <div className="z-10 text-on-primary mb-10">
           <h1 className="text-headline-lg-mobile font-bold mb-4 leading-tight">
-            {"Vivi la Sicilia come non l'hai mai vissuta"}
+            {dict.heroTitle}
           </h1>
           <p className="text-body-md text-surface-dim mb-8">
-            {"L'essenza del minimalismo architettonico nel cuore della città. Un rifugio esclusivo dove ogni dettaglio è sottratto fino alla perfezione."}
+            {dict.heroDescription}
           </p>
           <Link
-            href="/camere"
+            href={`/${lang}/camere`}
             className="block w-full py-4 px-8 bg-surface text-primary text-label-sm uppercase tracking-widest text-center active:scale-95 transition-transform"
           >
-            Esplora le Camere
+            {dict.heroCta}
           </Link>
         </div>
       </section>
@@ -36,11 +45,11 @@ export default function MobileHome() {
       <section className="py-16 px-margin-mobile bg-surface">
         <div className="flex flex-col gap-6">
           <h2 className="text-headline-md text-primary font-semibold">
-            {"Un'Estetica della Sottrazione."}
+            {dict.sectionTitle}
           </h2>
           <div className="w-12 h-px bg-primary" />
           <p className="text-body-md text-secondary leading-relaxed">
-            {"A Corleone Guesthouse, crediamo che il vero lusso risieda nello spazio e nella luce. I nostri ambienti sono progettati come gallerie d'arte, dove il mobilio essenziale e le texture pure permettono alla mente di riposare. Nessun eccesso, solo pura presenza architettonica."}
+            {dict.sectionDescription}
           </p>
         </div>
       </section>

@@ -1,0 +1,105 @@
+{
+  "site": {
+    "name": "Corleone Guesthouse",
+    "description": "The essence of architectural minimalism in the heart of the city. An exclusive retreat where every detail is stripped back to perfection."
+  },
+  "nav": {
+    "home": "Home",
+    "camere": "Rooms",
+    "cosaVisitare": "Things to Do",
+    "contatti": "Contact",
+    "prenotaOra": "Book Now",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "home": {
+    "heroTitle": "Experience Sicily like never before",
+    "heroDescription": "The essence of architectural minimalism in the heart of the city. An exclusive retreat where every detail is stripped back to perfection.",
+    "heroCta": "Explore Rooms",
+    "sectionTitle": "An Aesthetic of Subtraction.",
+    "sectionDescription": "At Corleone Guesthouse, we believe true luxury lies in space and light. Our spaces are designed as art galleries, where essential furnishings and pure textures allow the mind to rest. No excess, only pure architectural presence."
+  },
+  "camere": {
+    "title": "Rooms",
+    "subtitle": "Select your room",
+    "description": "Discover our exclusive solutions for an unforgettable stay in Corleone.",
+    "cta": "Book Now",
+    "roomDetail": {
+      "cameraLabel": "Room",
+      "maxGuests": "Max {capacity} Guests",
+      "pricePerPerson": "€{price} per person / night",
+      "bookNow": "Book Now",
+      "title": "Book Now",
+      "maxGuestsMobile": "Max {capacity} guests"
+    }
+  },
+  "cosaVisitare": {
+    "title": "Things to Do",
+    "description": "Discover the hidden treasures of Corleone. A journey through unspoiled nature, deep history, and sacred architecture, just steps from our guesthouse.",
+    "descriptionMobile": "Discover the hidden treasures of Corleone, just steps from the guesthouse.",
+    "scopriDiPiu": "Learn More",
+    "readyTitle": "Ready to explore?",
+    "readyDescription": "Book your stay at CORLEONE GUESTHOUSE and use our guesthouse as the perfect base for your adventures.",
+    "readyDescriptionMobile": "Book your stay and use the guesthouse as a base for your adventures.",
+    "readyCta": "Check Availability",
+    "poi": {
+      "due-rocche": {
+        "category": "Nature",
+        "title": "Due Rocche Waterfall",
+        "description": "A natural jewel nestled in the heart of Corleone. The San Leonardo river plunges forming a picturesque canyon, creating an oasis of peace and coolness, ideal for those seeking a relaxing break immersed in greenery, a short distance from the property."
+      },
+      "cidma": {
+        "category": "Culture",
+        "title": "CIDMA",
+        "description": "The International Documentation Center on Mafias and the Anti-Mafia Movement offers a fundamental journey to understand the recent history of Sicily. A touching and necessary experience, housing the files of the Maxi Trial and testimonies of civil courage."
+      },
+      "chiesa-madre": {
+        "category": "Architecture",
+        "title": "Mother Church",
+        "description": "Dedicated to San Martino, the Mother Church is the spiritual and architectural heart of the city. With its majestic interiors and treasured artworks, it represents an excellent example of Sicilian religious architecture, a silent witness to centuries of Corleone's history."
+      }
+    }
+  },
+  "contatti": {
+    "title": "Contact",
+    "description": "Write to us on WhatsApp for information or assistance during your stay.",
+    "cta": "Contact on WhatsApp"
+  },
+  "location": {
+    "title": "Location",
+    "address": "We are located in the heart of Corleone, at Via Santa Lucia 24"
+  },
+  "footer": {
+    "location": "Location",
+    "contattiStaff": "Contact Staff",
+    "rights": "ALL RIGHTS RESERVED."
+  },
+  "booking": {
+    "adulti": "Adults",
+    "bambini": "Children",
+    "nome": "Full Name",
+    "telefono": "Phone",
+    "email": "Email",
+    "dateError": "Select valid check-in and check-out dates (at least 1 night)",
+    "payNow": "Pay Now",
+    "waiting": "Please wait...",
+    "childrenFree": "free",
+    "nights": "nights",
+    "adultiLabel": "adults",
+    "connectionError": "Connection error",
+    "checkoutError": "Error during checkout",
+    "priceLine": "€{price} x {adults} {adultiLabel} {nights}",
+    "childLabel": "child",
+    "childLabelPlural": "children"
+  },
+  "languageSwitcher": {
+    "label": "Language"
+  },
+  "success": {
+    "title": "Payment Successful!",
+    "description": "Thank you for your booking. You will receive a confirmation via email.",
+    "guest": "Guest:",
+    "dates": "Dates:",
+    "backHome": "Back to Home"
+  }
+}

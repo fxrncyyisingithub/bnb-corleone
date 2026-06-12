@@ -4,6 +4,7 @@ import chiesaMadre from "@/immagini/cosa-visitare/chiesa-madre.png"
 import type { StaticImageData } from "next/image"
 
 export type PointOfInterest = {
+  id: string
   category: string
   title: string
   description: string
@@ -13,6 +14,7 @@ export type PointOfInterest = {
 
 export const POINTS_OF_INTEREST: PointOfInterest[] = [
   {
+    id: "due-rocche",
     category: "Natura",
     title: "Cascata delle Due Rocche",
     description:
@@ -21,6 +23,7 @@ export const POINTS_OF_INTEREST: PointOfInterest[] = [
     link: "https://maps.app.goo.gl/SfRCH8L4GL2SwBn66",
   },
   {
+    id: "cidma",
     category: "Cultura",
     title: "CIDMA",
     description:
@@ -29,6 +32,7 @@ export const POINTS_OF_INTEREST: PointOfInterest[] = [
     link: "https://www.cidmacorleone.it/",
   },
   {
+    id: "chiesa-madre",
     category: "Architettura",
     title: "Chiesa Madre",
     description:

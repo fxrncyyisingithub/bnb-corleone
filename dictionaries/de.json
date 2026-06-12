@@ -1,0 +1,105 @@
+{
+  "site": {
+    "name": "Corleone Guesthouse",
+    "description": "Die Essenz des architektonischen Minimalismus im Herzen der Stadt. Ein exklusiver Rückzugsort, an dem jedes Detail bis zur Perfektion reduziert ist."
+  },
+  "nav": {
+    "home": "Start",
+    "camere": "Zimmer",
+    "cosaVisitare": "Sehenswürdigkeiten",
+    "contatti": "Kontakt",
+    "prenotaOra": "Jetzt Buchen",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "home": {
+    "heroTitle": "Erleben Sie Sizilien wie nie zuvor",
+    "heroDescription": "Die Essenz des architektonischen Minimalismus im Herzen der Stadt. Ein exklusiver Rückzugsort, an dem jedes Detail bis zur Perfektion reduziert ist.",
+    "heroCta": "Zimmer entdecken",
+    "sectionTitle": "Eine Ästhetik der Reduktion.",
+    "sectionDescription": "Bei der Corleone Guesthouse glauben wir, dass wahrer Luxus in Raum und Licht liegt. Unsere Räume sind wie Kunstgalerien gestaltet, in denen schlichte Möbel und reine Texturen dem Geist Ruhe schenken. Kein Übermaß, nur pure architektonische Präsenz."
+  },
+  "camere": {
+    "title": "Zimmer",
+    "subtitle": "Wählen Sie Ihr Zimmer",
+    "description": "Entdecken Sie unsere exklusiven Lösungen für einen unvergesslichen Aufenthalt in Corleone.",
+    "cta": "Jetzt Buchen",
+    "roomDetail": {
+      "cameraLabel": "Zimmer",
+      "maxGuests": "Max. {capacity} Gäste",
+      "pricePerPerson": "€{price} pro Person / Nacht",
+      "bookNow": "Jetzt Buchen",
+      "title": "Jetzt Buchen",
+      "maxGuestsMobile": "Max. {capacity} Gäste"
+    }
+  },
+  "cosaVisitare": {
+    "title": "Sehenswürdigkeiten",
+    "description": "Entdecken Sie die verborgenen Schätze von Corleone. Eine Reise durch unberührte Natur, tiefe Geschichte und sakrale Architektur, nur wenige Schritte von unserer Guesthouse entfernt.",
+    "descriptionMobile": "Entdecken Sie die verborgenen Schätze von Corleone, nur wenige Schritte von der Guesthouse entfernt.",
+    "scopriDiPiu": "Mehr erfahren",
+    "readyTitle": "Bereit zu entdecken?",
+    "readyDescription": "Buchen Sie Ihren Aufenthalt in der CORLEONE GUESTHOUSE und nutzen Sie unsere Guesthouse als perfekte Basis für Ihre Abenteuer.",
+    "readyDescriptionMobile": "Buchen Sie Ihren Aufenthalt und nutzen Sie die Guesthouse als Basis für Ihre Abenteuer.",
+    "readyCta": "Verfügbarkeit prüfen",
+    "poi": {
+      "due-rocche": {
+        "category": "Natur",
+        "title": "Due Rocche Wasserfall",
+        "description": "Ein Naturjuwel im Herzen von Corleone. Der Fluss San Leonardo stürzt herab und bildet eine malerische Schlucht, eine Oase der Ruhe und Erfrischung, ideal für eine entspannende Auszeit im Grünen, nur einen kurzen Spaziergang von der Unterkunft entfernt."
+      },
+      "cidma": {
+        "category": "Kultur",
+        "title": "CIDMA",
+        "description": "Das Internationale Dokumentationszentrum über Mafien und die Antimafia-Bewegung bietet einen grundlegenden Einblick in die jüngere Geschichte Siziliens. Eine bewegende und notwendige Erfahrung, die die Akten des Maxi-Prozesses und Zeugnisse bürgerlichen Mutes bewahrt."
+      },
+      "chiesa-madre": {
+        "category": "Architektur",
+        "title": "Mutterkirche",
+        "description": "Dem Heiligen Martin gewidmet, ist die Mutterkirche das spirituelle und architektonische Herz der Stadt. Mit ihren majestätischen Innenräumen und den aufbewahrten Kunstwerken ist sie ein hervorragendes Beispiel sizilianischer Sakralarchitektur, ein stiller Zeuge jahrhundertelanger Geschichte."
+      }
+    }
+  },
+  "contatti": {
+    "title": "Kontakt",
+    "description": "Schreiben Sie uns auf WhatsApp für Informationen oder Hilfe während Ihres Aufenthalts.",
+    "cta": "Auf WhatsApp kontaktieren"
+  },
+  "location": {
+    "title": "Lage",
+    "address": "Wir befinden uns im Herzen von Corleone, in der Via Santa Lucia 24"
+  },
+  "footer": {
+    "location": "Lage",
+    "contattiStaff": "Mitarbeiter kontaktieren",
+    "rights": "ALLE RECHTE VORBEHALTEN."
+  },
+  "booking": {
+    "adulti": "Erwachsene",
+    "bambini": "Kinder",
+    "nome": "Vor- und Nachname",
+    "telefono": "Telefon",
+    "email": "E-Mail",
+    "dateError": "Wählen Sie gültige Check-in- und Check-out-Daten (mindestens 1 Nacht)",
+    "payNow": "Jetzt bezahlen",
+    "waiting": "Bitte warten...",
+    "childrenFree": "kostenlos",
+    "nights": "Nächte",
+    "adultiLabel": "Erwachsene",
+    "connectionError": "Verbindungsfehler",
+    "checkoutError": "Fehler beim Bezahlen",
+    "priceLine": "€{price} x {adults} {adultiLabel} {nights}",
+    "childLabel": "Kind",
+    "childLabelPlural": "Kinder"
+  },
+  "languageSwitcher": {
+    "label": "Sprache"
+  },
+  "success": {
+    "title": "Zahlung Erfolgreich!",
+    "description": "Vielen Dank für Ihre Buchung. Sie erhalten eine Bestätigung per E-Mail.",
+    "guest": "Gast:",
+    "dates": "Daten:",
+    "backHome": "Zurück zur Startseite"
+  }
+}

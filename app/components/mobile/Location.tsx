@@ -1,10 +1,15 @@
-export default function MobileLocation() {
+type Dict = {
+  title: string
+  address: string
+}
+
+export default function MobileLocation({ dict }: { dict: Dict }) {
   return (
     <div className="flex-grow w-full px-margin-mobile py-10 flex flex-col gap-8 min-h-[80vh]">
       <section className="flex flex-col gap-3">
-        <h1 className="text-headline-lg-mobile font-bold text-primary">Location</h1>
+        <h1 className="text-headline-lg-mobile font-bold text-primary">{dict.title}</h1>
         <p className="text-body-md text-primary font-semibold">
-          Ci troviamo nel cuore di Corleone, a Via Santa Lucia 24
+          {dict.address}
         </p>
       </section>
 

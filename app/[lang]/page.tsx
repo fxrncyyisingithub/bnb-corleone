@@ -1,19 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import hero from "@/immagini/corleone.png";
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
+import { getDictionary } from "@/lib/dictionary";
+import { isLocale } from "@/lib/locales";
+import { notFound } from "next/navigation";
 import MobileHome from "@/app/components/mobile/Home";
 
-export const metadata: Metadata = {
-  title: "Home",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = isLocale(lang) ? lang : "it";
+  const dict = await getDictionary(locale);
+  return {
+    title: dict.site.name,
+    description: dict.site.description,
+  };
+}
 
-export default async function Home() {
+export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+
+  const dict = await getDictionary(lang);
   const deviceType = await getRequestDeviceType();
 
   if (isMobileDevice(deviceType)) {
-    return <MobileHome />;
+    return <MobileHome dict={dict.home} lang={lang} />;
   }
 
   return (
@@ -32,16 +45,16 @@ export default async function Home() {
 
         <div className="z-10 text-on-primary mb-8 max-w-container-max mx-auto w-full">
           <h1 className="text-display font-bold mb-4">
-            {"Vivi la Sicilia come non l'hai mai vissuta"}
+            {dict.home.heroTitle}
           </h1>
           <p className="text-body-md max-w-sm text-surface-dim mb-8">
-            {"L'essenza del minimalismo architettonico nel cuore della città. Un rifugio esclusivo dove ogni dettaglio è sottratto fino alla perfezione."}
+            {dict.home.heroDescription}
           </p>
           <Link
-            href="/camere"
+            href={`/${lang}/camere`}
             className="inline-block py-4 px-8 bg-surface text-primary text-label-sm uppercase tracking-widest hover:bg-surface-dim transition-colors"
           >
-            Esplora le Camere
+            {dict.home.heroCta}
           </Link>
         </div>
       </section>
@@ -49,11 +62,11 @@ export default async function Home() {
       <section className="py-[80px] px-margin-desktop bg-surface">
         <div className="flex flex-col gap-6 max-w-container-max mx-auto">
           <h2 className="text-headline-md text-primary font-semibold">
-            {"Un'Estetica della Sottrazione."}
+            {dict.home.sectionTitle}
           </h2>
           <div className="w-12 h-px bg-primary" />
           <p className="text-body-md text-secondary max-w-3xl">
-            {"A Corleone Guesthouse, crediamo che il vero lusso risieda nello spazio e nella luce. I nostri ambienti sono progettati come gallerie d'arte, dove il mobilio essenziale e le texture pure permettono alla mente di riposare. Nessun eccesso, solo pura presenza architettonica."}
+            {dict.home.sectionDescription}
           </p>
         </div>
       </section>

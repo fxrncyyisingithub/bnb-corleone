@@ -10,6 +10,7 @@ export const checkoutSchema = z
     name: z.string().trim().min(2).max(100),
     email: z.string().trim().email().max(255),
     phone: z.string().trim().min(6).max(30),
+    locale: z.string().length(2).optional().default("it"),
   })
   .refine(
     (data) => new Date(data.checkOut) > new Date(data.checkIn),

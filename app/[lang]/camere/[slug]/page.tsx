@@ -5,11 +5,16 @@ import ImageGallery from "@/app/components/ImageGallery"
 import { ROOM_IMAGES } from "@/lib/rooms"
 import { PRICE_PER_ADULT } from "@/lib/constants"
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device"
+import { getDictionary } from "@/lib/dictionary"
+import { isLocale } from "@/lib/locales"
 import MobileRoomDetail from "@/app/components/mobile/RoomDetail"
 import { User, CreditCard } from "lucide-react"
 
-export default async function RoomPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default async function RoomPage({ params }: { params: Promise<{ lang: string; slug: string }> }) {
+  const { lang, slug } = await params
+  if (!isLocale(lang)) notFound()
+
+  const dict = await getDictionary(lang)
   const supabase = await createClient()
 
   const { data: room, error: roomError } = await supabase
@@ -42,7 +47,7 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
   const deviceType = await getRequestDeviceType()
 
   if (isMobileDevice(deviceType)) {
-    return <MobileRoomDetail room={room} images={images} bookedDates={bookedDates} />
+    return <MobileRoomDetail room={room} images={images} bookedDates={bookedDates} roomDict={dict.camere.roomDetail} bookingDict={dict.booking} lang={lang} />
   }
 
   return (
@@ -50,22 +55,22 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
       <div className="flex flex-row gap-12">
         <div className="flex-1">
           <ImageGallery images={images} name={room.name} />
-          <h1 className="text-headline-md font-bold text-primary mb-4">Camera {room.name}</h1>
+          <h1 className="text-headline-md font-bold text-primary mb-4">{dict.camere.roomDetail.cameraLabel} {room.name}</h1>
           <div className="flex gap-6 border-y border-outline-variant py-4">
             <div className="flex items-center gap-2 text-secondary">
               <User className="w-5 h-5" aria-hidden />
-              <span className="text-body-md font-semibold">Max {room.capacity} Ospiti</span>
+              <span className="text-body-md font-semibold">{dict.camere.roomDetail.maxGuests.replace("{capacity}", room.capacity)}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary">
               <CreditCard className="w-5 h-5" aria-hidden />
-              <span className="text-body-md font-semibold">€{PRICE_PER_ADULT} a persona / notte</span>
+              <span className="text-body-md font-semibold">{dict.camere.roomDetail.pricePerPerson.replace("{price}", String(PRICE_PER_ADULT))}</span>
             </div>
           </div>
         </div>
 
         <div className="flex-1 bg-surface-container-lowest border border-outline-variant p-8 rounded self-start sticky top-24">
-          <h2 className="text-[24px] font-semibold text-primary mb-6">Prenota Ora</h2>
-          <BookingForm room={room} bookedDates={bookedDates} />
+          <h2 className="text-[24px] font-semibold text-primary mb-6">{dict.camere.roomDetail.title}</h2>
+          <BookingForm room={room} bookedDates={bookedDates} dict={dict.booking} lang={lang} />
         </div>
       </div>
     </div>
