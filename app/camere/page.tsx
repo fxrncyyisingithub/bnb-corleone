@@ -1,12 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import { headers } from "next/headers";
+import MobileCamere from "@/app/components/mobile/Camere"
 
 export const metadata: Metadata = {
   title: "Camere",
 };
 
-export default function Camere() {
+export default async function Camere() {
+  const hdrs = await headers()
+  const deviceType = hdrs.get("x-device-type") || "desktop"
+
+  if (deviceType === "mobile") {
+    return <MobileCamere />
+  }
+
   const rooms = [
     {
       id: "101",

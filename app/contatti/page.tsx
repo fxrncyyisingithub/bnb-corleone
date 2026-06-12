@@ -1,19 +1,26 @@
 import { Metadata } from "next";
+import { headers } from "next/headers";
+import MobileContatti from "@/app/components/mobile/Contatti"
 
 export const metadata: Metadata = {
   title: "Contatti",
 };
 
-export default function Contatti() {
+export default async function Contatti() {
+  const hdrs = await headers()
+  const deviceType = hdrs.get("x-device-type") || "desktop"
+
+  if (deviceType === "mobile") {
+    return <MobileContatti />
+  }
+
   return (
     <div className="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-10 md:py-20 flex flex-col gap-10">
-      {/* Page Header */}
       <section className="flex flex-col gap-4">
         <h1 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary">Contatti</h1>
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-surface-container-high shrink-0 flex items-center justify-center">
@@ -51,7 +58,6 @@ export default function Contatti() {
             </a>
           </div>
         </section>
-
       </div>
     </div>
   );

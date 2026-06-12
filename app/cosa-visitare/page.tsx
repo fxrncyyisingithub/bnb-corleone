@@ -1,18 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import dueRocche from "@/immagini/cosa-visitare/due-rocche.png"
 import cidma from "@/immagini/cosa-visitare/cidma.png"
 import chiesaMadre from "@/immagini/cosa-visitare/chiesa-madre.png"
+import MobileCosaVisitare from "@/app/components/mobile/CosaVisitare"
 
 export const metadata: Metadata = {
   title: "Cosa Visitare",
 };
 
-export default function CosaVisitare() {
+export default async function CosaVisitare() {
+  const hdrs = await headers()
+  const deviceType = hdrs.get("x-device-type") || "desktop"
+
+  if (deviceType === "mobile") {
+    return <MobileCosaVisitare />
+  }
+
   return (
     <>
-      {/* Header Section */}
       <header className="px-margin-mobile md:px-margin-desktop py-16 md:py-24 max-w-container-max mx-auto text-center border-b border-surface-variant w-full">
         <h1 className="text-headline-lg-mobile md:text-display text-primary font-bold mb-6">
           Cosa Visitare
@@ -22,9 +30,7 @@ export default function CosaVisitare() {
         </p>
       </header>
 
-      {/* Points of Interest List */}
       <main className="max-w-container-max mx-auto w-full">
-        {/* POI 1 */}
         <section className="flex flex-col md:flex-row border-b border-surface-variant">
           <div className="w-full md:w-1/2 aspect-[4/3] bg-surface-container-high overflow-hidden relative">
               <Image
@@ -58,7 +64,6 @@ export default function CosaVisitare() {
           </div>
         </section>
 
-        {/* POI 2 */}
         <section className="flex flex-col md:flex-row-reverse border-b border-surface-variant">
           <div className="w-full md:w-1/2 aspect-[4/3] bg-surface-container-high overflow-hidden relative">
               <Image
@@ -92,7 +97,6 @@ export default function CosaVisitare() {
           </div>
         </section>
 
-        {/* POI 3 */}
         <section className="flex flex-col md:flex-row border-b border-surface-variant">
           <div className="w-full md:w-1/2 aspect-[4/3] bg-surface-container-high overflow-hidden relative">
               <Image
@@ -126,7 +130,6 @@ export default function CosaVisitare() {
           </div>
         </section>
 
-        {/* Action Call */}
         <section className="px-margin-mobile md:px-margin-desktop py-20 text-center bg-surface-container-low">
           <h3 className="text-headline-md font-semibold text-primary mb-6">
             Pronto per esplorare?

@@ -1,27 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
-import { headers } from "next/headers";
 import hero from "@/immagini/corleone.png"
-import MobileHome from "@/app/components/mobile/Home"
 
-export const metadata: Metadata = {
-  title: "Home",
-};
-
-export default async function Home() {
-  const hdrs = await headers()
-  const deviceType = hdrs.get("x-device-type") || "desktop"
-
-  if (deviceType === "mobile") {
-    return <MobileHome />
-  }
-
+export default function MobileHome() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[80vh] w-full flex flex-col justify-end p-margin-mobile md:p-margin-desktop">
-        {/* Background Image */}
+      <section className="relative h-[80vh] w-full flex flex-col justify-end p-margin-mobile">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
             src={hero}
@@ -29,13 +14,11 @@ export default async function Home() {
             fill
             priority
             className="object-cover filter grayscale contrast-125 brightness-90"
-          /> 
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
         </div>
-
-        {/* Hero Content */}
-        <div className="z-10 text-on-primary mb-8 max-w-container-max mx-auto w-full">
-          <h1 className="text-headline-lg-mobile md:text-display font-bold mb-4">
+        <div className="z-10 text-on-primary mb-8">
+          <h1 className="text-headline-lg-mobile font-bold mb-4">
             Vivi la Sicilia come non l'hai mai vissuta
           </h1>
           <p className="text-body-md max-w-sm text-surface-dim mb-8">
@@ -51,15 +34,15 @@ export default async function Home() {
       </section>
 
       {/* Intro Section */}
-      <section className="py-[80px] px-margin-mobile md:px-margin-desktop bg-surface">
-        <div className="flex flex-col gap-6 max-w-container-max mx-auto">
+      <section className="py-[80px] px-margin-mobile bg-surface">
+        <div className="flex flex-col gap-6">
           <h2 className="text-headline-md text-primary font-semibold">Un'Estetica della Sottrazione.</h2>
           <div className="w-12 h-px bg-primary"></div>
-          <p className="text-body-md text-secondary max-w-3xl">
+          <p className="text-body-md text-secondary">
             A Corleone Guesthouse, crediamo che il vero lusso risieda nello spazio e nella luce. I nostri ambienti sono progettati come gallerie d'arte, dove il mobilio essenziale e le texture pure permettono alla mente di riposare. Nessun eccesso, solo pura presenza architettonica.
           </p>
         </div>
       </section>
     </>
-  );
+  )
 }
