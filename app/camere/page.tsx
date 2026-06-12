@@ -9,54 +9,24 @@ export const metadata: Metadata = {
 export default function Camere() {
   const rooms = [
     {
-      id: "suite-1",
-      name: "Suite No. 1",
-      description: "Spazio minimalista con vista sul cortile interno.",
-      guests: "2 Ospiti",
-      features: [
-        { icon: "person", text: "2 Ospiti" },
-        { icon: "square_foot", text: "35 mq" },
-      ],
-      price: "250",
+      id: "101",
+      name: "101",
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCo64f2tdD04CVHNwYNxEj32KeVlnX75Abw0TOzFK90u8ZMmNIWkNYNVG1MJJM8N3OlO9Aosql9v9rpLhDp4QiW5yeoDVbjPbNnXTnGtP3hClhI3nBZmR5iMfHGc0TBL9UL6TqYMAXuZbuLk1TMm1z503cCsnjS4c1_-FxTyIAY4juzjPS9An85Z9vQLJ-gJFaEG3HDJEjwV5G5S_U7Dd9mdj2KKlX4B_6NklNvAoaoB9qn4wjQ93NueRS937DJbuvl0lKdkyjKKmw",
-      badge: "DISPONIBILE",
     },
     {
-      id: "suite-2",
-      name: "Suite No. 2",
-      description: "Design contemporaneo con vasca freestanding in camera.",
-      guests: "2 Ospiti",
-      features: [
-        { icon: "person", text: "2 Ospiti" },
-        { icon: "bathtub", text: "Vasca freestanding" },
-      ],
-      price: "280",
+      id: "102",
+      name: "102",
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCchw9pE3C5PdG9BV-Bz3NieIUgVvaVeVrqygPAwJCgfDmmQ10SFb9KjHfFCnWMgByKNz3NbXQ9_nStArSqQfrofoBF0SVYSGGr1WfyRr9fCgHTXOFWMe0wimp1FP2cSxafV_6nM5rH-uhuMhS8D4t8Rlr-0Jn_3iu2MiWID9ndEC2QYAvFG4xGbSkJrcIGj8OKr7Khf3Rmr08Jcu5HLBJ7LWHy8GYKENcimkR-xT0j9tTM0ul37eCmCe2gk_sf9_pSW3NwQj-HMGo",
     },
     {
-      id: "superior",
-      name: "Camera Superior",
-      description: "Intima e accogliente, ideale per brevi soggiorni.",
-      guests: "2 Ospiti",
-      features: [
-        { icon: "person", text: "2 Ospiti" },
-        { icon: "wifi", text: "Wi-Fi Veloce" },
-      ],
-      price: "180",
+      id: "103",
+      name: "103",
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2nPqA4DNaN5iudLawzJOcSAZvzUMfFJcF_RtQdqKjWlhct_aNH2NcdQwmAITvAv8ZSFOUO0AUweXBtb63FjAOExOQyI4euf3nlAGcEf0vXYifAdYzEhgVBZsSsDb_MPLd_TF7w2vG_K53ZiHxI0Hwe1LxThdGnkdJfDhsMj21a6SVow731KUz8anQVMRkFLFNJ2Wb8z5z2auqHWRsw8nXUv4p0YypPoeYSadzKGpyhSGHB1xseNFl5x7AsY2bj2Cs7NGXOuQXoFM",
     },
     {
-      id: "attico",
-      name: "Attico Panoramico",
-      description: "L'apice del lusso con terrazza privata sui tetti.",
-      guests: "2-4 Ospiti",
-      features: [
-        { icon: "person", text: "2-4 Ospiti" },
-        { icon: "deck", text: "Terrazza Privata" },
-      ],
-      price: "450",
+      id: "104",
+      name: "104",
       image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAHKez_jbCq2VtVPv1x_1yIvrgtuoDZQeHNTBErTvB4RWv1HC5Y3-p_cU0roWwocz2cb_3xF5hElKUl2faaxYkA6FQSK-c3sKxytJoL8gc22trY8AisiYVlUNgFm1q8g5vLC_2CLk7DSYoVxsQWH-gvzegLuFzoCwx2BULiXmD3FGxMIyUsb5UbiS_IgadwMHiBlzQxNTWqsZqBAW_gfcOjQj2TWkMXikXBpt8d0pWvUGylv470JkZXcJwM8j1Ua5D7lGHM5NXyExs",
-      badge: "ESCLUSIVO",
     },
   ];
 
@@ -85,36 +55,15 @@ export default function Camere() {
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
-              {room.badge && (
-                <div className="absolute top-4 left-4 bg-surface-container-lowest px-3 py-1">
-                  <span className="text-label-sm font-semibold uppercase tracking-widest text-primary">
-                    {room.badge}
-                  </span>
-                </div>
-              )}
             </div>
             <div className="flex flex-col gap-4 flex-grow">
-              <div>
-                <h2 className="text-headline-md font-semibold text-primary mb-1">
-                  {room.name}
-                </h2>
-                <p className="text-body-md text-secondary">{room.description}</p>
-              </div>
-              <div className="flex flex-col gap-2 mt-2">
-                {room.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-secondary">
-                    <span className="material-symbols-outlined">{feature.icon}</span>
-                    <span className="text-body-md">{feature.text}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant md:border-t-0">
-                <div className="text-body-lg font-semibold text-primary">
-                  € {room.price} <span className="text-secondary text-body-md font-normal">/ notte</span>
-                </div>
+              <h2 className="text-headline-md font-semibold text-primary">
+                {room.name}
+              </h2>
+              <div className="mt-auto pt-4 border-t border-outline-variant md:border-t-0">
                 <Link 
                   href={`/camere/${room.id}`}
-                  className="bg-primary text-on-primary text-body-md font-semibold uppercase tracking-widest px-6 py-3 hover:opacity-70 transition-opacity duration-300 active:scale-95 text-center"
+                  className="block w-full bg-primary text-on-primary text-body-md font-semibold uppercase tracking-widest py-3 hover:opacity-70 transition-opacity duration-300 active:scale-95 text-center"
                 >
                   Prenota Ora
                 </Link>

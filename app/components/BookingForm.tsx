@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import { DayPicker, DateRange } from 'react-day-picker'
-import { format, differenceInDays } from 'date-fns'
+import { differenceInDays } from 'date-fns'
 import { it } from 'date-fns/locale'
 import "react-day-picker/style.css"
+
+const PRICE_PER_ADULT = 40
 
 type Room = {
   id: string
@@ -15,7 +17,8 @@ type Room = {
 
 export default function BookingForm({ room, bookedDates }: { room: Room, bookedDates: string[] }) {
   const [range, setRange] = useState<DateRange | undefined>()
-  const [guests, setGuests] = useState(1)
+  const [adults, setAdults] = useState(1)
+  const [bambini, setBambini] = useState(0)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -23,11 +26,10 @@ export default function BookingForm({ room, bookedDates }: { room: Room, bookedD
   const [error, setError] = useState<string | null>(null)
 
   const disabledDays = bookedDates.map(d => new Date(d))
-  // Also disable past dates
   disabledDays.push({ before: new Date() } as any)
 
   const days = range?.from && range?.to ? differenceInDays(range.to, range.from) : 0
-  const totalPrice = days > 0 ? days * room.price : 0
+  const totalPrice = days > 0 ? days * PRICE_PER_ADULT * adults : 0
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,11 +48,11 @@ export default function BookingForm({ room, bookedDates }: { room: Room, bookedD
           roomId: room.id,
           checkIn: range.from.toISOString(),
           checkOut: range.to.toISOString(),
-          guests,
+          adults,
+          bambini,
           name,
           email,
           phone,
-          totalPrice
         })
       })
       const data = await res.json()
@@ -83,24 +85,48 @@ export default function BookingForm({ room, bookedDates }: { room: Room, bookedD
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Ospiti</label>
-          <select 
-            value={guests} 
-            onChange={e => setGuests(Number(e.target.value))}
+          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Adulti</label>
+          <select
+            value={adults}
+            onChange={e => setAdults(Number(e.target.value))}
             className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
           >
             {Array.from({ length: room.capacity }, (_, i) => i + 1).map(n => (
-              <option key={n} value={n}>{n} {n === 1 ? 'Ospite' : 'Ospiti'}</option>
+              <option key={n} value={n}>{n}</option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-1">
+          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Bambini (0-6)</label>
+          <select
+            value={bambini}
+            onChange={e => setBambini(Number(e.target.value))}
+            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
+          >
+            {Array.from({ length: 6 }, (_, i) => i).map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Nome e Cognome</label>
+          <input
+            type="text"
+            value={name} onChange={e => setName(e.target.value)} required
+            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
           <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Telefono</label>
-          <input 
-            type="tel" 
+          <input
+            type="tel"
             value={phone} onChange={e => setPhone(e.target.value)} required
             className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
           />
@@ -108,18 +134,9 @@ export default function BookingForm({ room, bookedDates }: { room: Room, bookedD
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Nome e Cognome</label>
-        <input 
-          type="text" 
-          value={name} onChange={e => setName(e.target.value)} required
-          className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
         <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Email</label>
-        <input 
-          type="email" 
+        <input
+          type="email"
           value={email} onChange={e => setEmail(e.target.value)} required
           className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary"
         />
@@ -129,11 +146,16 @@ export default function BookingForm({ room, bookedDates }: { room: Room, bookedD
 
       <div className="flex items-center justify-between border-t border-outline-variant pt-6 mt-2">
         <div>
-          <div className="text-label-sm font-semibold text-secondary uppercase tracking-widest">Totale Soggiorno</div>
+          <div className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
+            €{PRICE_PER_ADULT} x {adults} adulti {days > 0 ? `x ${days} notti` : ''}
+          </div>
           <div className="text-[24px] font-bold text-primary">€{totalPrice}</div>
+          {bambini > 0 && (
+            <div className="text-label-sm text-secondary">{bambini} bambino{(bambini > 1) ? 'ni' : ''} gratis</div>
+          )}
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading || totalPrice === 0}
           className="bg-primary text-on-primary py-3 px-8 font-semibold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-opacity"
         >

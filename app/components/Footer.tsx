@@ -18,19 +18,7 @@ export default function Footer() {
         {/* Legal Links */}
         <nav className="flex flex-col gap-base">
           <Link
-            href="#"
-            className="text-label-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
-          >
-            Privacy Policy
-          </Link>
-          <Link
-            href="#"
-            className="text-label-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
-          >
-            Termini e Condizioni
-          </Link>
-          <Link
-            href="#"
+            href="/location"
             className="text-label-sm uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
           >
             Location

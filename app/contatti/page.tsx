@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,124 +10,44 @@ export default function Contatti() {
       {/* Page Header */}
       <section className="flex flex-col gap-4">
         <h1 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary">Contatti</h1>
-        <p className="text-body-lg text-secondary max-w-2xl">
-          Siamo a vostra disposizione per qualsiasi richiesta o necessità. Contattate direttamente il reparto desiderato.
-        </p>
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Sede Centrale */}
-        <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary">apartment</span>
-            <h2 className="text-[24px] font-semibold text-primary">Sede Centrale</h2>
-          </div>
-          <p className="text-body-md text-secondary">
-            Corleone Guesthouse<br />Via Roma 123, 00100 Roma, Italia
-          </p>
-          <div className="flex flex-col gap-3 mt-2">
-            <a href="tel:+390612345678" className="flex items-center gap-2 text-body-md text-primary font-semibold hover:underline">
-              <span className="material-symbols-outlined text-secondary text-sm">call</span>
-              +39 06 1234 5678
-            </a>
-            <a href="mailto:info@corleoneguesthouse.it" className="flex items-center gap-2 text-body-md text-primary font-semibold hover:underline">
-              <span className="material-symbols-outlined text-secondary text-sm">mail</span>
-              info@corleoneguesthouse.it
-            </a>
-          </div>
-        </section>
 
-        {/* Relazioni Media */}
         <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary">campaign</span>
-            <h2 className="text-[24px] font-semibold text-primary">Relazioni Media</h2>
-          </div>
-          <p className="text-body-md text-secondary">
-            Per richieste stampa, interviste e materiale fotografico ad alta risoluzione.
-          </p>
-          <div className="flex flex-col gap-3 mt-2">
-            <a href="mailto:press@corleoneguesthouse.it" className="flex items-center gap-2 text-body-md text-primary font-semibold hover:underline">
-              <span className="material-symbols-outlined text-secondary text-sm">mail</span>
-              press@corleoneguesthouse.it
-            </a>
-          </div>
-        </section>
-
-        {/* Direzione - Elena Rostova */}
-        <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high shrink-0 relative">
-              <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIR-OLS8wVcT9rGV_pybeTZMV6CEttIBHgrpr797RpZ1gBd2aXo1a6D6Xi9naFma0D1x0gTsKc1vXyLBFcZRNDgb2kG8qFTAXrqlw9KI5aMGwRHqFuCeMNDssmBcQsgiSkVeYi8jDagDbIw-28mr7KuoKSZqBcnoBUbbRvBeLdG9fFXxbR_VhXPshP3k0nyWWcsEyx7BBs1nv3SfZSLFWzBuxA16ba870Cy06mKVEi72jpGdEVhV7pKBH_EBMGMagvAQQzmhS1Lv4"
-                alt="Elena Rostova"
-                fill
-                className="object-cover"
-              />
+            <div className="w-12 h-12 rounded-full bg-surface-container-high shrink-0 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary">person</span>
             </div>
             <div>
-              <h2 className="text-[20px] font-semibold text-primary">Elena Rostova</h2>
-              <p className="text-label-sm font-semibold text-secondary uppercase tracking-widest mt-1">
-                Direttrice Generale
-              </p>
+              <h2 className="text-[20px] font-semibold text-primary">Salvatore Paternostro</h2>
             </div>
           </div>
           <div className="flex flex-col gap-3 mt-auto pt-4 border-t border-surface-container-high">
-            <a href="mailto:direzione@corleoneguesthouse.it" className="flex items-center justify-center w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity">
-              <span className="material-symbols-outlined mr-2 text-sm">mail</span> Contatta Direzione
+            <a href="https://wa.me/393208531653" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M19.05 4.91A9.816 9.816 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01zm-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.264 8.264 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.183 8.183 0 0 1 2.41 5.83c.02 4.54-3.68 8.23-8.22 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.44.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.16-.48-.28z"/>
+              </svg>
+              Contatta su WhatsApp
             </a>
           </div>
         </section>
 
-        {/* Concierge - Marco Vetti */}
         <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high shrink-0 relative">
-              <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBoxMpiUCPdxo4xKXlwcSHNzH57XTe1H2EOzEjkLO0izMeCAYA2SEIjMRu2mrHACp7vV9cS7kBav1xaTtZYD-v9QdpjhSeifNAb4i6R91YDUI9Z-DCIFJhsbmrnkLAR7zjpXlcs2-SGpLiWUgj7NLAkVQ5OJ6wmx9VAmrsZjJtLkAnQL3IikU6lYVwgPVrAkPwQnVoOHvAyHt3EyEeJpxZXuRtx-qabe-xZlkG4kVqS3lfIbrKwjj4JwsYUcsYHLAMgdmlkFs5I6I"
-                alt="Marco Vetti"
-                fill
-                className="object-cover"
-              />
+            <div className="w-12 h-12 rounded-full bg-surface-container-high shrink-0 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary">person</span>
             </div>
             <div>
-              <h2 className="text-[20px] font-semibold text-primary">Marco Vetti</h2>
-              <p className="text-label-sm font-semibold text-secondary uppercase tracking-widest mt-1">
-                Capo Concierge
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row gap-3 mt-auto pt-4 border-t border-surface-container-high">
-            <a href="tel:+393331234567" className="flex items-center justify-center w-full py-3 bg-surface-container-lowest border border-primary text-primary text-body-md font-semibold hover:bg-surface-container-low transition-colors">
-              <span className="material-symbols-outlined mr-2 text-sm">call</span> Chiama
-            </a>
-            <a href="mailto:concierge@corleoneguesthouse.it" className="flex items-center justify-center w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity">
-              <span className="material-symbols-outlined mr-2 text-sm">mail</span> Email
-            </a>
-          </div>
-        </section>
-
-        {/* Eventi - Sofia Bianchi */}
-        <section className="bg-surface-container-lowest border border-outline-variant p-6 rounded flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-surface-container-high shrink-0 relative">
-              <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC27djZLVWRIDpFL13esOEoMK-Q1JVvyr8t7nc8jDLER0bIlAba8U0zVxlQJafaafvKRgZZISKWhTohpHfNhHGEyQvT_0dRrgoRALIX-bgVmLEB30vZ0Bp6be7KdJlBo4gxuwP-0X-uJOlcXUM1GD31QPfhqsU8QQRzTCK3eHy1FZKqzAuvTtIDAq8LkTXYwJI88qEsJ65ZIXWIwPNcZzKs_n7Iu80ydvuagUV_SVxzC5hzaMOEjZdB7p4TVvRaCxhnauHE1b6Bso"
-                alt="Sofia Bianchi"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <h2 className="text-[20px] font-semibold text-primary">Sofia Bianchi</h2>
-              <p className="text-label-sm font-semibold text-secondary uppercase tracking-widest mt-1">
-                Responsabile Eventi
-              </p>
+              <h2 className="text-[20px] font-semibold text-primary">Mariateresa Paternostro</h2>
             </div>
           </div>
           <div className="flex flex-col gap-3 mt-auto pt-4 border-t border-surface-container-high">
-            <a href="mailto:eventi@corleoneguesthouse.it" className="flex items-center justify-center w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity">
-              <span className="material-symbols-outlined mr-2 text-sm">mail</span> Richiedi Info Eventi
+            <a href="https://wa.me/393206988750" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-on-primary text-body-md font-semibold hover:opacity-90 transition-opacity">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M19.05 4.91A9.816 9.816 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01zm-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.264 8.264 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.183 8.183 0 0 1 2.41 5.83c.02 4.54-3.68 8.23-8.22 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.44.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.16-.48-.28z"/>
+              </svg>
+              Contatta su WhatsApp
             </a>
           </div>
         </section>

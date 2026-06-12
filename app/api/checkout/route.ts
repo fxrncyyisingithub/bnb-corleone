@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
+import { differenceInDays } from 'date-fns'
+
+const PRICE_PER_ADULT = 40
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { roomId, checkIn, checkOut, guests, name, email, phone, totalPrice } = body
+    const { roomId, checkIn, checkOut, adults, bambini, name, email, phone } = body
 
     const supabase = await createClient()
 
@@ -21,8 +24,6 @@ export async function POST(req: Request) {
     }
 
     // Verify availability to prevent double booking
-    // Conflicts happen if an existing paid reservation overlaps with the requested dates.
-    // Overlap condition: existing.check_in < requested.checkOut AND existing.check_out > requested.checkIn
     const { data: conflicts, error: conflictError } = await supabase
       .from('reservations')
       .select('id')
@@ -39,6 +40,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Le date selezionate non sono più disponibili.' }, { status: 400 })
     }
 
+    // Calculate total price server-side
+    const nights = differenceInDays(new Date(checkOut), new Date(checkIn))
+    const totalPrice = nights * PRICE_PER_ADULT * adults
+    const guests = adults + (bambini || 0)
+
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -47,22 +53,24 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Prenotazione: ${room.name}`,
-              description: `${new Date(checkIn).toLocaleDateString('it-IT')} - ${new Date(checkOut).toLocaleDateString('it-IT')} (${guests} Ospiti)`,
+              name: `Prenotazione: Camera ${room.name}`,
+              description: `${new Date(checkIn).toLocaleDateString('it-IT')} - ${new Date(checkOut).toLocaleDateString('it-IT')} (${adults} adulti${bambini ? `, ${bambini} bambini` : ''})`,
             },
-            unit_amount: totalPrice * 100, // in cents
+            unit_amount: totalPrice * 100,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXT_PUBLIC_URL}/success/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/camere/${room.slug}`,
       customer_email: email,
       metadata: {
         roomId,
         checkIn,
         checkOut,
+        adults: adults.toString(),
+        bambini: (bambini || 0).toString(),
         guests: guests.toString(),
         name,
         email,

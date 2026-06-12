@@ -39,6 +39,9 @@ export async function POST(req: Request) {
       stripe_session_id: session.id
     })
 
+    // Log adults/bambini for reference (metadata stores them)
+    console.log(`Reservation: ${metadata.adults} adults, ${metadata.bambini} children (${metadata.guests} total)`)
+
     if (error) {
       console.error('Failed to insert reservation:', error)
       return NextResponse.json({ error: 'Database Error' }, { status: 500 })

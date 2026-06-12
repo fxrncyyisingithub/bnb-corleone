@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,17 +14,30 @@ const navLinks = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [hovered, setHovered] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
 
-  // Prevent body scroll when mobile menu is open
+  const moveTo = useCallback((href: string | null) => {
+    const target = href || navLinks.find(l => l.href === pathname)?.href
+    const el = target ? linkRefs.current.get(target) : null
+    if (el && navRef.current) {
+      const parentRect = navRef.current.getBoundingClientRect()
+      const elRect = el.getBoundingClientRect()
+      setIndicator({ left: elRect.left - parentRect.left, width: elRect.width })
+    }
+  }, [pathname])
+
+  useEffect(() => { moveTo(null) }, [moveTo])
+
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = "" };
   }, [menuOpen]);
 
   return (
@@ -48,20 +61,27 @@ export default function Header() {
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-8 items-center">
+        <nav ref={navRef} className="hidden md:flex gap-8 items-center relative">
           {navLinks.map((link) => (
             <Link
               key={link.href}
+              ref={el => { if (el) linkRefs.current.set(link.href, el) }}
               href={link.href}
-              className={`text-body-md uppercase tracking-widest transition-colors active:scale-95 ${
+              onMouseEnter={() => moveTo(link.href)}
+              onMouseLeave={() => moveTo(null)}
+              className={`text-body-md uppercase tracking-widest py-1 transition-colors active:scale-95 ${
                 pathname === link.href
-                  ? "text-primary border-b border-primary pb-1"
+                  ? "text-primary"
                   : "text-secondary hover:text-primary"
               }`}
             >
               {link.label}
             </Link>
           ))}
+          <span
+            className="absolute -bottom-px h-px bg-primary transition-all duration-300 ease-out pointer-events-none"
+            style={{ left: indicator.left, width: indicator.width }}
+          />
           <Link
             href="/camere"
             className="bg-primary text-on-primary px-6 py-3 text-label-sm uppercase tracking-widest hover:opacity-70 transition-opacity duration-300"

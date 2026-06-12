@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import hero from "@/immagini/corleone.png"
 
 export const metadata: Metadata = {
   title: "Home",
@@ -14,7 +15,7 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
-            src="/images/hero.jpg"
+            src={hero}
             alt="Architettura minimalista"
             fill
             priority
