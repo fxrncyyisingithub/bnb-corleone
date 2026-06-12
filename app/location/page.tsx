@@ -1,14 +1,22 @@
 import { Metadata } from "next";
+import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
+import MobileLocation from "@/app/components/mobile/Location";
 
 export const metadata: Metadata = {
   title: "Location",
 };
 
-export default function Location() {
+export default async function Location() {
+  const deviceType = await getRequestDeviceType();
+
+  if (isMobileDevice(deviceType)) {
+    return <MobileLocation />;
+  }
+
   return (
-    <div className="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-10 md:py-20 flex flex-col gap-10 min-h-[80vh]">
+    <div className="flex-grow w-full max-w-container-max mx-auto px-margin-desktop py-20 flex flex-col gap-10 min-h-[80vh]">
       <section className="flex flex-col gap-4">
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary">Location</h1>
+        <h1 className="text-headline-lg font-bold text-primary">Location</h1>
       </section>
 
       <div className="text-center">

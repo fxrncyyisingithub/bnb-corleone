@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export default function ImageGallery({ images, name }: { images: string[], name: string }) {
   const [current, setCurrent] = useState(0)
@@ -26,14 +27,14 @@ export default function ImageGallery({ images, name }: { images: string[], name:
             aria-label="Foto precedente"
             className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
           >
-            <span className="material-symbols-outlined text-lg">chevron_left</span>
+            <ChevronLeft className="w-5 h-5" aria-hidden />
           </button>
           <button
             onClick={next}
             aria-label="Foto successiva"
             className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
           >
-            <span className="material-symbols-outlined text-lg">chevron_right</span>
+            <ChevronRight className="w-5 h-5" aria-hidden />
           </button>
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">

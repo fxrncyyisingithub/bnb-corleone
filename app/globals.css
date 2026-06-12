@@ -93,15 +93,6 @@
   --radius: 0.125rem;
 }
 
-/* ===== Material Symbols icon styling ===== */
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-
-.filled-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-
 /* ===== Selection styling ===== */
 ::selection {
   background-color: var(--color-primary);
@@ -115,4 +106,74 @@
 }
 .grayscale-hover:hover {
   filter: grayscale(0%);
+}
+
+/* ===== Booking calendar (react-day-picker) ===== */
+.booking-calendar {
+  --rdp-accent-color: #1d1d1d;
+  --rdp-accent-background-color: #eeeeee;
+  width: 100%;
+  max-width: 100%;
+}
+
+.booking-calendar .rdp-months {
+  max-width: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.booking-calendar .rdp-month {
+  width: 100%;
+}
+
+.booking-calendar .rdp-month_grid {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.booking-calendar .rdp-month_caption {
+  font-size: 0.9375rem;
+}
+
+.booking-calendar .rdp-day {
+  width: auto;
+  height: auto;
+  padding: 1px;
+}
+
+.booking-calendar .rdp-day_button {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 2rem;
+  height: auto;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.booking-calendar .rdp-weekday {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 400px) {
+  .booking-calendar {
+    --rdp-nav_button-height: 1.75rem;
+    --rdp-nav_button-width: 1.75rem;
+    --rdp-nav-height: 2.25rem;
+  }
+
+  .booking-calendar .rdp-month_caption {
+    font-size: 0.875rem;
+  }
+
+  .booking-calendar .rdp-day_button {
+    min-height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .booking-calendar .rdp-weekday {
+    font-size: 0.625rem;
+  }
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,21 +16,22 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
-  const [hovered, setHovered] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
 
   const moveTo = useCallback((href: string | null) => {
-    const target = href || navLinks.find(l => l.href === pathname)?.href
-    const el = target ? linkRefs.current.get(target) : null
+    const target = href || navLinks.find((l) => l.href === pathname)?.href;
+    const el = target ? linkRefs.current.get(target) : null;
     if (el && navRef.current) {
-      const parentRect = navRef.current.getBoundingClientRect()
-      const elRect = el.getBoundingClientRect()
-      setIndicator({ left: elRect.left - parentRect.left, width: elRect.width })
+      const parentRect = navRef.current.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      setIndicator({ left: elRect.left - parentRect.left, width: elRect.width });
     }
-  }, [pathname])
+  }, [pathname]);
 
-  useEffect(() => { moveTo(null) }, [moveTo])
+  useEffect(() => {
+    moveTo(null);
+  }, [moveTo]);
 
   useEffect(() => {
     if (menuOpen) {
@@ -37,12 +39,13 @@ export default function Header() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = "" };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
 
   return (
     <>
-      {/* Fixed Header Bar */}
       <header className="bg-surface fixed top-0 w-full z-50 flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop border-b border-outline-variant">
         <Link
           href="/"
@@ -51,21 +54,21 @@ export default function Header() {
           CORLEONE GUESTHOUSE
         </Link>
 
-        {/* Mobile Hamburger */}
         <button
           className="md:hidden text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
           onClick={() => setMenuOpen(true)}
           aria-label="Apri menu"
         >
-          <span className="material-symbols-outlined">menu</span>
+          <Menu className="w-6 h-6" aria-hidden />
         </button>
 
-        {/* Desktop Navigation */}
         <nav ref={navRef} className="hidden md:flex gap-8 items-center relative">
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              ref={el => { if (el) linkRefs.current.set(link.href, el) }}
+              ref={(el) => {
+                if (el) linkRefs.current.set(link.href, el);
+              }}
               href={link.href}
               onMouseEnter={() => moveTo(link.href)}
               onMouseLeave={() => moveTo(null)}
@@ -91,13 +94,11 @@ export default function Header() {
         </nav>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay */}
       <div
         className={`fixed inset-0 bg-surface z-50 flex flex-col pt-20 px-margin-mobile pb-10 transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Menu Header */}
         <div className="absolute top-0 left-0 w-full flex justify-between items-center h-20 px-margin-mobile border-b border-outline-variant">
           <span className="text-headline-md font-bold text-primary tracking-tighter">
             CORLEONE GUESTHOUSE
@@ -107,11 +108,10 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             aria-label="Chiudi menu"
           >
-            <span className="material-symbols-outlined">close</span>
+            <X className="w-6 h-6" aria-hidden />
           </button>
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex-1 flex flex-col justify-center gap-8 mt-10">
           {navLinks.map((link) => (
             <Link
@@ -129,7 +129,6 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* CTA Button */}
         <div className="mt-auto pt-8">
           <Link
             href="/camere"

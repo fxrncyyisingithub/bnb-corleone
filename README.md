@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Corleone Guesthouse
 
-## Getting Started
+Sito web per la guesthouse con prenotazioni online, pagamenti Stripe e area admin.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS 4
+- Supabase (auth + database)
+- Stripe Checkout + webhooks
+- BotId (protezione anti-bot sul checkout)
+
+## Setup
+
+1. Copia le variabili d'ambiente:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Compila `.env.local` con le credenziali Supabase e Stripe.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Avvia il dev server:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Apri [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Script
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Comando | Descrizione |
+|---------|-------------|
+| `npm run dev` | Dev server |
+| `npm run build` | Build di produzione |
+| `npm run start` | Server di produzione |
+| `npm run lint` | ESLint |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Struttura
 
-## Deploy on Vercel
+```
+app/              Pagine e componenti UI
+app/components/mobile/   UI dedicata per smartphone (rilevata via User-Agent)
+lib/              Client Supabase/Stripe, validazione, dati condivisi
+proxy.ts          Auth admin + device detection + refresh sessione Supabase
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Versione mobile
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Su smartphone il proxy imposta l'header `x-device-type: mobile` e le pagine pubbliche renderizzano componenti dedicati in `app/components/mobile/`. Tablet e desktop ricevono la versione desktop. I dati (camere, contatti, POI) sono condivisi da `lib/` — niente duplicazione dei contenuti.
+
+## Flusso prenotazione
+
+1. L'ospite seleziona date e dati nella pagina camera
+2. `POST /api/checkout` valida input, controlla disponibilità e crea sessione Stripe
+3. Stripe webhook (`POST /api/webhook`) salva la prenotazione su Supabase
+4. Pagina `/success/[session_id]` verifica il pagamento con Stripe
+
+## Admin
+
+- Login: `/admin/login`
+- Prenotazioni: `/admin/reservations` (protetta da auth Supabase)
+
+## Deploy
+
+Configura le variabili d'ambiente su Vercel (o altro host) e imposta il webhook Stripe su:
+
+```
+https://<tuo-dominio>/api/webhook
+```
+
+Evento richiesto: `checkout.session.completed`
