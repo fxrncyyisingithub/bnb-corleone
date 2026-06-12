@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ===== COLORS - Material Design 3 Neutral Palette ===== */
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1b1b1b;
+  --color-on-primary-container: #848484;
+  --color-primary-fixed: #e2e2e2;
+  --color-primary-fixed-dim: #c6c6c6;
+  --color-on-primary-fixed: #1b1b1b;
+  --color-on-primary-fixed-variant: #474747;
+  --color-inverse-primary: #c6c6c6;
+
+  --color-secondary: #5d5e66;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e3e1ec;
+  --color-on-secondary-container: #63646c;
+  --color-secondary-fixed: #e3e1ec;
+  --color-secondary-fixed-dim: #c6c5cf;
+  --color-on-secondary-fixed: #1a1b22;
+  --color-on-secondary-fixed-variant: #46464e;
+
+  --color-tertiary: #000000;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #1a1c1d;
+  --color-on-tertiary-container: #838485;
+  --color-tertiary-fixed: #e2e2e3;
+  --color-tertiary-fixed-dim: #c6c6c7;
+  --color-on-tertiary-fixed: #1a1c1d;
+  --color-on-tertiary-fixed-variant: #454748;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-surface: #f9f9f9;
+  --color-on-surface: #1b1b1b;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface-variant: #4c4546;
+  --color-surface-dim: #dadada;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-low: #f3f3f3;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-tint: #5e5e5e;
+
+  --color-background: #f9f9f9;
+  --color-on-background: #1b1b1b;
+
+  --color-outline: #7e7576;
+  --color-outline-variant: #cfc4c5;
+
+  --color-inverse-surface: #303030;
+  --color-inverse-on-surface: #f1f1f1;
+
+  /* ===== FONT FAMILIES (all Inter) ===== */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-headline-lg: var(--font-inter), system-ui, sans-serif;
+  --font-headline-md: var(--font-inter), system-ui, sans-serif;
+  --font-headline-lg-mobile: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter), system-ui, sans-serif;
+  --font-body-lg: var(--font-inter), system-ui, sans-serif;
+  --font-body-md: var(--font-inter), system-ui, sans-serif;
+  --font-label-sm: var(--font-inter), system-ui, sans-serif;
+
+  /* ===== FONT SIZES (with line-height pairing) ===== */
+  --font-size-display: 72px;
+  --font-size-display--line-height: 1.1;
+  --font-size-headline-lg: 48px;
+  --font-size-headline-lg--line-height: 1.2;
+  --font-size-headline-lg-mobile: 32px;
+  --font-size-headline-lg-mobile--line-height: 1.2;
+  --font-size-headline-md: 30px;
+  --font-size-headline-md--line-height: 1.3;
+  --font-size-body-lg: 18px;
+  --font-size-body-lg--line-height: 1.6;
+  --font-size-body-md: 16px;
+  --font-size-body-md--line-height: 1.6;
+  --font-size-label-sm: 12px;
+  --font-size-label-sm--line-height: 1;
+
+  /* ===== SPACING ===== */
+  --spacing-base: 8px;
+  --spacing-margin-mobile: 24px;
+  --spacing-margin-desktop: 64px;
+  --spacing-gutter: 32px;
+
+  /* ===== BORDER RADIUS ===== */
+  --radius: 0.125rem;
+}
+
+/* ===== Material Symbols icon styling ===== */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.filled-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ===== Selection styling ===== */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ===== Grayscale hover effect for POI images ===== */
+.grayscale-hover {
+  transition: filter 0.5s ease;
+  filter: grayscale(100%);
+}
+.grayscale-hover:hover {
+  filter: grayscale(0%);
+}

@@ -1,0 +1,125 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/camere", label: "Camere" },
+  { href: "/cosa-visitare", label: "Cosa Visitare" },
+  { href: "/contatti", label: "Contatti" },
+];
+
+export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  return (
+    <>
+      {/* Fixed Header Bar */}
+      <header className="bg-surface fixed top-0 w-full z-50 flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop border-b border-outline-variant">
+        <Link
+          href="/"
+          className="text-headline-md font-bold text-primary tracking-tighter"
+        >
+          CORLEONE GUESTHOUSE
+        </Link>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="md:hidden text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Apri menu"
+        >
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex gap-8 items-center">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-body-md uppercase tracking-widest transition-colors active:scale-95 ${
+                pathname === link.href
+                  ? "text-primary border-b border-primary pb-1"
+                  : "text-secondary hover:text-primary"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link
+            href="/camere"
+            className="bg-primary text-on-primary px-6 py-3 text-label-sm uppercase tracking-widest hover:opacity-70 transition-opacity duration-300"
+          >
+            Prenota Ora
+          </Link>
+        </nav>
+      </header>
+
+      {/* Full Screen Mobile Menu Overlay */}
+      <div
+        className={`fixed inset-0 bg-surface z-50 flex flex-col pt-20 px-margin-mobile pb-10 transition-transform duration-300 ease-in-out ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Menu Header */}
+        <div className="absolute top-0 left-0 w-full flex justify-between items-center h-20 px-margin-mobile border-b border-outline-variant">
+          <span className="text-headline-md font-bold text-primary tracking-tighter">
+            CORLEONE GUESTHOUSE
+          </span>
+          <button
+            className="text-primary hover:opacity-70 transition-opacity duration-300 active:scale-95"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Chiudi menu"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex-1 flex flex-col justify-center gap-8 mt-10">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className={`text-headline-lg-mobile uppercase tracking-widest self-start ${
+                pathname === link.href
+                  ? "text-primary border-b border-primary pb-1"
+                  : "text-secondary hover:text-primary transition-colors"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* CTA Button */}
+        <div className="mt-auto pt-8">
+          <Link
+            href="/camere"
+            onClick={() => setMenuOpen(false)}
+            className="block w-full py-4 bg-primary text-on-primary text-center text-label-sm uppercase tracking-widest hover:opacity-90 transition-opacity"
+          >
+            Prenota Ora
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
