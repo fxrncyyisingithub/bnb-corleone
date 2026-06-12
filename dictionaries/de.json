@@ -77,21 +77,18 @@
   },
   "booking": {
     "adulti": "Erwachsene",
-    "bambini": "Kinder",
     "nome": "Vor- und Nachname",
-    "telefono": "Telefon",
     "email": "E-Mail",
     "dateError": "Wählen Sie gültige Check-in- und Check-out-Daten (mindestens 1 Nacht)",
     "payNow": "Jetzt bezahlen",
     "waiting": "Bitte warten...",
-    "childrenFree": "kostenlos",
     "nights": "Nächte",
     "adultiLabel": "Erwachsene",
+    "adultSingular": "Erwachsener",
+    "childSingular": "Kind",
+    "childPlural": "Kinder",
     "connectionError": "Verbindungsfehler",
-    "checkoutError": "Fehler beim Bezahlen",
-    "priceLine": "€{price} x {adults} {adultiLabel} {nights}",
-    "childLabel": "Kind",
-    "childLabelPlural": "Kinder"
+    "checkoutError": "Fehler beim Bezahlen"
   },
   "languageSwitcher": {
     "label": "Sprache"

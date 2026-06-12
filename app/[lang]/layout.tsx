@@ -3,7 +3,6 @@ import { isLocale } from "@/lib/locales";
 import { notFound } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import BotIdProvider from "@/app/components/BotIdProvider";
 
 export async function generateStaticParams() {
   return [{ lang: "it" }, { lang: "en" }, { lang: "de" }];
@@ -32,7 +31,6 @@ export default async function LangLayout({
       <Header lang={lang} dict={dict.nav} />
       <main className="flex-grow pt-20">{children}</main>
       <Footer dict={dict.footer} lang={lang} />
-      <BotIdProvider />
     </>
   );
 }

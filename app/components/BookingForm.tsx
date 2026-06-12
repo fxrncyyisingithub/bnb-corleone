@@ -9,6 +9,7 @@ import { de } from "date-fns/locale/de"
 import "react-day-picker/style.css"
 import { PRICE_PER_ADULT } from "@/lib/constants"
 import type { Locale } from "@/lib/locales"
+import type { OccupancyOption } from "@/lib/rooms"
 
 type Room = {
   id: string
@@ -19,21 +20,18 @@ type Room = {
 
 type Dict = {
   adulti: string
-  bambini: string
   nome: string
-  telefono: string
   email: string
   dateError: string
   payNow: string
   waiting: string
-  childrenFree: string
   nights: string
   adultiLabel: string
+  adultSingular: string
+  childSingular: string
+  childPlural: string
   connectionError: string
   checkoutError: string
-  priceLine: string
-  childLabel: string
-  childLabelPlural: string
 }
 
 const dateLocales: Record<string, object> = {
@@ -42,13 +40,11 @@ const dateLocales: Record<string, object> = {
   de,
 }
 
-export default function BookingForm({ room, bookedDates, dict, lang }: { room: Room; bookedDates: string[]; dict: Dict; lang: Locale }) {
+export default function BookingForm({ room, occupancy, bookedDates, dict, lang }: { room: Room; occupancy: OccupancyOption[]; bookedDates: string[]; dict: Dict; lang: Locale }) {
   const [range, setRange] = useState<DateRange | undefined>()
-  const [adults, setAdults] = useState(1)
-  const [bambini, setBambini] = useState(0)
+  const [selected, setSelected] = useState(0)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -58,7 +54,8 @@ export default function BookingForm({ room, bookedDates, dict, lang }: { room: R
   ]
 
   const days = range?.from && range?.to ? differenceInDays(range.to, range.from) : 0
-  const totalPrice = days > 0 ? days * PRICE_PER_ADULT * adults : 0
+  const occ = occupancy[selected]
+  const totalPrice = days > 0 ? days * PRICE_PER_ADULT * occ.adults : 0
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,11 +74,10 @@ export default function BookingForm({ room, bookedDates, dict, lang }: { room: R
           roomId: room.id,
           checkIn: range.from.toISOString(),
           checkOut: range.to.toISOString(),
-          adults,
-          bambini,
+          adults: occ.adults,
+          bambini: occ.bambini,
           name,
           email,
-          phone,
           locale: lang,
         }),
       })
@@ -100,9 +96,15 @@ export default function BookingForm({ room, bookedDates, dict, lang }: { room: R
 
   const dateLocale = dateLocales[lang] ?? it
 
+  const occLabel = (opt: OccupancyOption) => {
+    const a = `${opt.adults} ${opt.adults === 1 ? dict.adultSingular : dict.adultiLabel}`
+    if (opt.bambini === 0) return a
+    return `${a} + ${opt.bambini} ${opt.bambini === 1 ? dict.childSingular : dict.childPlural}`
+  }
+
   return (
-    <form onSubmit={handleCheckout} className="flex flex-col gap-6 w-full min-w-0">
-      <div className="w-full min-w-0 border border-outline-variant p-2 sm:p-4 bg-surface rounded">
+    <form onSubmit={handleCheckout} className="flex flex-col gap-4 w-full min-w-0">
+      <div className="w-full min-w-0 border border-outline-variant p-1.5 sm:p-2 bg-surface rounded">
         <DayPicker
           mode="range"
           selected={range}
@@ -121,64 +123,32 @@ export default function BookingForm({ room, bookedDates, dict, lang }: { room: R
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        <div className="flex flex-col gap-1 min-w-0">
-          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
-            {dict.adulti}
-          </label>
-          <select
-            value={adults}
-            onChange={(e) => setAdults(Number(e.target.value))}
-            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
-          >
-            {Array.from({ length: room.capacity }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex flex-col gap-1 min-w-0">
-          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
-            {dict.bambini}
-          </label>
-          <select
-            value={bambini}
-            onChange={(e) => setBambini(Number(e.target.value))}
-            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
-          >
-            {Array.from({ length: 6 }, (_, i) => i).map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
+      <div className="flex flex-col gap-1 min-w-0">
+        <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
+          {dict.adulti}
+        </label>
+        <select
+          value={selected}
+          onChange={(e) => setSelected(Number(e.target.value))}
+          className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
+        >
+          {occupancy.map((opt, i) => (
+            <option key={i} value={i}>{occLabel(opt)}</option>
+          ))}
+        </select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
-            {dict.nome}
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
-            {dict.telefono}
-          </label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-            className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
-          />
-        </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
+          {dict.nome}
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="p-3 border border-outline-variant bg-surface text-primary focus:outline-none focus:border-primary w-full"
+        />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -199,14 +169,9 @@ export default function BookingForm({ room, bookedDates, dict, lang }: { room: R
       <div className="flex flex-col gap-4 border-t border-outline-variant pt-6 mt-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="text-label-sm font-semibold text-secondary uppercase tracking-widest">
-            €{PRICE_PER_ADULT} x {adults} {dict.adultiLabel} {days > 0 ? `x ${days} ${dict.nights}` : ""}
+            €{PRICE_PER_ADULT} x {occ.adults} {dict.adultiLabel} {days > 0 ? `x ${days} ${dict.nights}` : ""}
           </div>
           <div className="text-[24px] font-bold text-primary">€{totalPrice}</div>
-          {bambini > 0 && (
-            <div className="text-label-sm text-secondary">
-              {bambini} {bambini > 1 ? dict.childLabelPlural : dict.childLabel} {dict.childrenFree}
-            </div>
-          )}
         </div>
         <button
           type="submit"

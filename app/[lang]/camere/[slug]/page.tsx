@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import BookingForm from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
-import { ROOM_IMAGES } from "@/lib/rooms"
+import { ROOM_IMAGES, ROOM_OCCUPANCY } from "@/lib/rooms"
 import { PRICE_PER_ADULT } from "@/lib/constants"
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device"
 import { getDictionary } from "@/lib/dictionary"
@@ -44,10 +44,12 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
   })
 
   const images = ROOM_IMAGES[room.slug] ?? ROOM_IMAGES["101"]
+  const occupancy = ROOM_OCCUPANCY[room.slug] ?? ROOM_OCCUPANCY["101"]
+  const maxCapacity = Math.max(...occupancy.map(o => o.adults))
   const deviceType = await getRequestDeviceType()
 
   if (isMobileDevice(deviceType)) {
-    return <MobileRoomDetail room={room} images={images} bookedDates={bookedDates} roomDict={dict.camere.roomDetail} bookingDict={dict.booking} lang={lang} />
+    return <MobileRoomDetail room={room} occupancy={occupancy} images={images} bookedDates={bookedDates} roomDict={dict.camere.roomDetail} bookingDict={dict.booking} lang={lang} />
   }
 
   return (
@@ -59,7 +61,7 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
           <div className="flex gap-6 border-y border-outline-variant py-4">
             <div className="flex items-center gap-2 text-secondary">
               <User className="w-5 h-5" aria-hidden />
-              <span className="text-body-md font-semibold">{dict.camere.roomDetail.maxGuests.replace("{capacity}", room.capacity)}</span>
+              <span className="text-body-md font-semibold">{dict.camere.roomDetail.maxGuests.replace("{capacity}", String(maxCapacity))}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary">
               <CreditCard className="w-5 h-5" aria-hidden />
@@ -70,7 +72,7 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
 
         <div className="flex-1 bg-surface-container-lowest border border-outline-variant p-8 rounded self-start sticky top-24">
           <h2 className="text-[24px] font-semibold text-primary mb-6">{dict.camere.roomDetail.title}</h2>
-          <BookingForm room={room} bookedDates={bookedDates} dict={dict.booking} lang={lang} />
+          <BookingForm room={room} occupancy={occupancy} bookedDates={bookedDates} dict={dict.booking} lang={lang} />
         </div>
       </div>
     </div>

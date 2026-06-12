@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { roomId, checkIn, checkOut, adults, bambini, name, email, phone, locale } = parsed.data
+    const { roomId, checkIn, checkOut, adults, bambini, name, email, locale } = parsed.data
     const supabase = await createClient()
 
     const { data: room, error: roomError } = await supabase
@@ -91,6 +91,7 @@ export async function POST(req: Request) {
       customer_email: email,
       metadata: {
         roomId,
+        roomName: room.name,
         checkIn,
         checkOut,
         adults: adults.toString(),
@@ -98,7 +99,6 @@ export async function POST(req: Request) {
         guests: guests.toString(),
         name,
         email,
-        phone,
         totalPrice: totalPrice.toString(),
       },
     })

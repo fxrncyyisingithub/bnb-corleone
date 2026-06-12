@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { sendGuestConfirmation, sendStaffNotification } from "@/lib/email"
+import { format } from "date-fns"
 
 export async function POST(req: Request) {
   const payload = await req.text()
@@ -64,6 +66,30 @@ export async function POST(req: Request) {
       console.error("Failed to insert reservation:", error)
       return NextResponse.json({ error: "Database Error" }, { status: 500 })
     }
+
+    const fmtDate = (d: string) => format(new Date(d), "dd/MM/yyyy")
+    const guestEmail = metadata.email ?? session.customer_email ?? ""
+
+    if (guestEmail) {
+      sendGuestConfirmation({
+        name: metadata.name ?? "",
+        roomName: metadata.roomName ?? "",
+        checkIn: fmtDate(metadata.checkIn),
+        checkOut: fmtDate(metadata.checkOut),
+        total: metadata.totalPrice,
+        sessionId: session.id,
+      })
+    }
+
+    sendStaffNotification({
+      guestName: metadata.name ?? "",
+      guestEmail,
+      guestPhone: metadata.phone ?? "",
+      roomName: metadata.roomName ?? "",
+      checkIn: fmtDate(metadata.checkIn),
+      checkOut: fmtDate(metadata.checkOut),
+      total: metadata.totalPrice,
+    })
   }
 
   return NextResponse.json({ received: true })

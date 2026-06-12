@@ -3,6 +3,7 @@ import ImageGallery from "@/app/components/ImageGallery"
 import { PRICE_PER_ADULT } from "@/lib/constants"
 import { User, CreditCard } from "lucide-react"
 import type { Locale } from "@/lib/locales"
+import type { OccupancyOption } from "@/lib/rooms"
 
 type Room = {
   id: string
@@ -20,25 +21,23 @@ type Dict = {
 
 type BookingDict = {
   adulti: string
-  bambini: string
   nome: string
-  telefono: string
   email: string
   dateError: string
   payNow: string
   waiting: string
-  childrenFree: string
   nights: string
   adultiLabel: string
+  adultSingular: string
+  childSingular: string
+  childPlural: string
   connectionError: string
   checkoutError: string
-  priceLine: string
-  childLabel: string
-  childLabelPlural: string
 }
 
 export default function MobileRoomDetail({
   room,
+  occupancy,
   images,
   bookedDates,
   roomDict,
@@ -46,12 +45,14 @@ export default function MobileRoomDetail({
   lang,
 }: {
   room: Room
+  occupancy: OccupancyOption[]
   images: string[]
   bookedDates: string[]
   roomDict: Dict
   bookingDict: BookingDict
   lang: Locale
 }) {
+  const maxCapacity = Math.max(...occupancy.map(o => o.adults))
   return (
     <div className="flex-grow pb-20 px-margin-mobile w-full pt-6">
       <ImageGallery images={images} name={room.name} />
@@ -62,7 +63,7 @@ export default function MobileRoomDetail({
       <div className="flex flex-col gap-3 border-y border-outline-variant py-4 mb-8">
         <div className="flex items-center gap-2 text-secondary">
           <User className="w-5 h-5" aria-hidden />
-          <span className="text-body-md font-semibold">{roomDict.maxGuestsMobile.replace("{capacity}", String(room.capacity))}</span>
+          <span className="text-body-md font-semibold">{roomDict.maxGuestsMobile.replace("{capacity}", String(maxCapacity))}</span>
         </div>
         <div className="flex items-center gap-2 text-secondary">
           <CreditCard className="w-5 h-5" aria-hidden />
@@ -74,7 +75,7 @@ export default function MobileRoomDetail({
 
       <div className="bg-surface-container-lowest border border-outline-variant p-3 min-w-0">
         <h2 className="text-[22px] font-semibold text-primary mb-6">{roomDict.title}</h2>
-        <BookingForm room={room} bookedDates={bookedDates} dict={bookingDict} lang={lang} />
+        <BookingForm room={room} occupancy={occupancy} bookedDates={bookedDates} dict={bookingDict} lang={lang} />
       </div>
     </div>
   )

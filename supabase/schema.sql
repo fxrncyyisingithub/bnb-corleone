@@ -61,6 +61,6 @@ CREATE POLICY "Reservations are fully accessible by authenticated users."
 -- Insert dummy rooms based on our design
 INSERT INTO rooms (slug, name, description, price, capacity) VALUES 
 ('101', '101', 'Spazio minimalista con vista sul cortile interno.', 40, 2),
-('102', '102', 'Design contemporaneo con vasca freestanding in camera.', 40, 2),
-('103', '103', 'Intima e accogliente, ideale per brevi soggiorni.', 40, 2),
-('104', '104', 'L''apice del lusso con terrazza privata sui tetti.', 40, 4);
+('102', '102', 'Design contemporaneo con vasca freestanding in camera.', 40, 3),
+('103', '103', 'Intima e accogliente, ideale per brevi soggiorni.', 40, 3),
+('104', '104', 'L''apice del lusso con terrazza privata sui tetti.', 40, 2);
