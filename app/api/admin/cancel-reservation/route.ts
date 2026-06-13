@@ -37,13 +37,13 @@ export async function POST(req: Request) {
       }
     }
 
-    const { error: updateError } = await supabase
+    const { error: deleteError } = await supabase
       .from("reservations")
-      .update({ status: "cancelled" })
+      .delete()
       .eq("id", reservationId)
 
-    if (updateError) {
-      return NextResponse.json({ error: "Errore nell'aggiornamento della prenotazione" }, { status: 500 })
+    if (deleteError) {
+      return NextResponse.json({ error: "Errore nell'eliminazione della prenotazione" }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

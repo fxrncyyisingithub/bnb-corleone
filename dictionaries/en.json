@@ -73,6 +73,7 @@
   "footer": {
     "location": "Location",
     "contattiStaff": "Contact Staff",
+    "adminArea": "Admin Area",
     "rights": "ALL RIGHTS RESERVED."
   },
   "booking": {

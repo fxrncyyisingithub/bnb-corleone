@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/locales";
 type Dict = {
   location: string;
   contattiStaff: string;
+  adminArea: string;
   rights: string;
 };
 
@@ -24,6 +25,12 @@ export default function Footer({
           <p className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-4">
             © {new Date().getFullYear()} CORLEONE GUESTHOUSE. {dict.rights}
           </p>
+          <Link
+            href="/admin/login"
+            className="text-[10px] uppercase tracking-widest text-on-surface-variant/40 hover:text-on-surface-variant transition-colors mt-2 inline-block"
+          >
+            {dict.adminArea}
+          </Link>
         </div>
 
         <nav className="flex flex-col gap-base">
