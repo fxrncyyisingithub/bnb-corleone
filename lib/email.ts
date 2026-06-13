@@ -84,7 +84,9 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                       Codice prenotazione: <strong style="color: #000000;">${sessionId}</strong>
                     </p>
                     <p style="font-size: 14px; line-height: 1.6; color: #5d5e66; margin: 16px 0 0;">
-                      Per qualsiasi richiesta, contattaci su WhatsApp o rispondi a questa email.
+                      <a href="https://corleoneguesthouse.com/contatti" style="display: inline-block; background: #000000; color: #ffffff; padding: 12px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
+                        Contattaci
+                      </a>
                     </p>
                   </td>
                 </tr>
