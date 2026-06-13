@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 import { Metadata } from 'next'
+import CancelButton from './CancelButton'
 
 export const metadata: Metadata = {
   title: 'Prenotazioni | Corleone Guesthouse',
@@ -44,6 +45,7 @@ export default async function AdminReservations() {
               <th className="p-4">Check-in / Check-out</th>
               <th className="p-4">Importo</th>
               <th className="p-4">Stato</th>
+              <th className="p-4">Azioni</th>
             </tr>
           </thead>
           <tbody>
@@ -71,11 +73,14 @@ export default async function AdminReservations() {
                     {res.status}
                   </span>
                 </td>
+                <td className="p-4">
+                  {res.status === 'paid' && <CancelButton reservationId={res.id} />}
+                </td>
               </tr>
             ))}
             {reservations?.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-body-md text-secondary">Nessuna prenotazione trovata.</td>
+                <td colSpan={7} className="p-8 text-center text-body-md text-secondary">Nessuna prenotazione trovata.</td>
               </tr>
             )}
           </tbody>
