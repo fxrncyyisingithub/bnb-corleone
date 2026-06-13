@@ -95,7 +95,7 @@
   },
   "success": {
     "title": "Zahlung Erfolgreich!",
-    "description": "Vielen Dank für Ihre Buchung. Sie erhalten eine Bestätigung per E-Mail.",
+    "description": "Vielen Dank für Ihre Buchung. Wir werden Sie in Kürze kontaktieren.",
     "guest": "Gast:",
     "dates": "Daten:",
     "backHome": "Zurück zur Startseite"

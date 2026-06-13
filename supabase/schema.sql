@@ -9,6 +9,7 @@ CREATE TABLE rooms (
   description TEXT,
   price DECIMAL NOT NULL,
   capacity INT NOT NULL,
+  image_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -57,6 +58,14 @@ CREATE POLICY "Reservations are fully accessible by authenticated users."
 
 -- Service Role (Webhook) can do everything
 -- Note: Service Role bypasses RLS by default.
+
+-- Exclusion constraint to prevent overlapping paid reservations
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+ALTER TABLE reservations ADD CONSTRAINT no_overlapping_reservation
+  EXCLUDE USING GIST (
+    room_id WITH =,
+    daterange(check_in, check_out, '[]') WITH &&
+  ) WHERE (status = 'paid');
 
 -- Insert dummy rooms based on our design
 INSERT INTO rooms (slug, name, description, price, capacity) VALUES 

@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Prenotazioni - Area Riservata',
+  title: 'Prenotazioni | Corleone Guesthouse',
 }
 
 export default async function AdminReservations() {

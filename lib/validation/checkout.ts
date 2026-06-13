@@ -15,5 +15,13 @@ export const checkoutSchema = z
     (data) => new Date(data.checkOut) > new Date(data.checkIn),
     { message: "La data di check-out deve essere successiva al check-in", path: ["checkOut"] }
   )
+  .refine(
+    (data) => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      return new Date(data.checkIn) >= today
+    },
+    { message: "Il check-in non può essere nel passato", path: ["checkIn"] }
+  )
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>

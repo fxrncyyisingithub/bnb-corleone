@@ -1,6 +1,5 @@
 import BookingForm from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
-import { PRICE_PER_ADULT } from "@/lib/constants"
 import { User, CreditCard } from "lucide-react"
 import type { Locale } from "@/lib/locales"
 import type { OccupancyOption } from "@/lib/rooms"
@@ -68,7 +67,7 @@ export default function MobileRoomDetail({
         <div className="flex items-center gap-2 text-secondary">
           <CreditCard className="w-5 h-5" aria-hidden />
           <span className="text-body-md font-semibold">
-            {roomDict.pricePerPerson.replace("{price}", String(PRICE_PER_ADULT))}
+            {roomDict.pricePerPerson.replace("{price}", String(room.price))}
           </span>
         </div>
       </div>

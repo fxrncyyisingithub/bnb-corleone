@@ -95,7 +95,7 @@
   },
   "success": {
     "title": "Pagamento Completato!",
-    "description": "Grazie per la tua prenotazione. Riceverai una conferma via email.",
+    "description": "Grazie per la tua prenotazione. Ti contatteremo a breve per confermare.",
     "guest": "Ospite:",
     "dates": "Date:",
     "backHome": "Torna alla Home"

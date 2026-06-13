@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 
+const ROOM_IMAGE_BASE = "https://ntwzgepxzdtndrtcmidd.supabase.co/storage/v1/object/public/rooms"
+
 export type RoomListItem = {
   id: string
   slug: string
@@ -12,25 +14,25 @@ const FALLBACK_ROOMS: RoomListItem[] = [
     id: "101",
     slug: "101",
     name: "101",
-    image: "/images/rooms/101/head.jpeg",
+    image: `${ROOM_IMAGE_BASE}/101/head.jpeg`,
   },
   {
     id: "102",
     slug: "102",
     name: "102",
-    image: "/images/rooms/102/head.jpeg",
+    image: `${ROOM_IMAGE_BASE}/102/head.jpeg`,
   },
   {
     id: "103",
     slug: "103",
     name: "103",
-    image: "/images/rooms/103/head.jpeg",
+    image: `${ROOM_IMAGE_BASE}/103/head.jpeg`,
   },
   {
     id: "104",
     slug: "104",
     name: "104",
-    image: "/images/rooms/104/head.jpeg",
+    image: `${ROOM_IMAGE_BASE}/104/head.jpeg`,
   },
 ]
 
@@ -60,30 +62,32 @@ export const ROOM_OCCUPANCY: Record<string, OccupancyOption[]> = {
   ],
 }
 
+const img = (slug: string, file: string) => `${ROOM_IMAGE_BASE}/${slug}/${file}`
+
 export const ROOM_IMAGES: Record<string, string[]> = {
   "101": [
-    "/images/rooms/101/head.jpeg",
-    "/images/rooms/101/bagno.jpeg",
-    "/images/rooms/101/bagno2.jpeg",
-    "/images/rooms/101/whatsapp_image_2026-06-12_at_21.41.05.jpeg",
+    img("101", "head.jpeg"),
+    img("101", "bagno.jpeg"),
+    img("101", "bagno2.jpeg"),
+    img("101", "whatsapp_image_2026-06-12_at_21.41.05.jpeg"),
   ],
   "102": [
-    "/images/rooms/102/head.jpeg",
-    "/images/rooms/102/bagno.jpeg",
-    "/images/rooms/102/whatsapp_image_2026-06-12_at_21.41.06.jpeg",
-    "/images/rooms/102/whatsapp_image_2026-06-12_at_21.41.07_3.jpeg",
+    img("102", "head.jpeg"),
+    img("102", "bagno.jpeg"),
+    img("102", "whatsapp_image_2026-06-12_at_21.41.06.jpeg"),
+    img("102", "whatsapp_image_2026-06-12_at_21.41.07_3.jpeg"),
   ],
   "103": [
-    "/images/rooms/103/head.jpeg",
-    "/images/rooms/103/whatsapp_image_2026-06-12_at_21.41.06_1.jpeg",
-    "/images/rooms/103/whatsapp_image_2026-06-12_at_21.41.07.jpeg",
-    "/images/rooms/103/whatsapp_image_2026-06-12_at_21.41.09.jpeg",
+    img("103", "head.jpeg"),
+    img("103", "whatsapp_image_2026-06-12_at_21.41.06_1.jpeg"),
+    img("103", "whatsapp_image_2026-06-12_at_21.41.07.jpeg"),
+    img("103", "whatsapp_image_2026-06-12_at_21.41.09.jpeg"),
   ],
   "104": [
-    "/images/rooms/104/head.jpeg",
-    "/images/rooms/104/whatsapp_image_2026-06-12_at_21.41.07_1.jpeg",
-    "/images/rooms/104/whatsapp_image_2026-06-12_at_21.41.08_2.jpeg",
-    "/images/rooms/104/312331110.png",
+    img("104", "head.jpeg"),
+    img("104", "whatsapp_image_2026-06-12_at_21.41.07_1.jpeg"),
+    img("104", "whatsapp_image_2026-06-12_at_21.41.08_2.jpeg"),
+    img("104", "312331110.png"),
   ],
 }
 

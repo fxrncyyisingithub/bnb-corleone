@@ -49,6 +49,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true, duplicate: true })
     }
 
+    const { data: conflicts } = await supabase
+      .from("reservations")
+      .select("id")
+      .eq("room_id", metadata.roomId)
+      .eq("status", "paid")
+      .lt("check_in", metadata.checkOut)
+      .gt("check_out", metadata.checkIn)
+
+    if (conflicts && conflicts.length > 0) {
+      console.error("Overlapping reservation detected, refunding:", session.id)
+      const paymentIntent = session.payment_intent
+      if (typeof paymentIntent === "string") {
+        await stripe.refunds.create({
+          payment_intent: paymentIntent,
+        }).catch((e) => console.error("Refund failed:", e))
+      }
+      return NextResponse.json({ error: "Date non più disponibili, rimborso effettuato." }, { status: 409 })
+    }
+
     const { error } = await supabase.from("reservations").insert({
       room_id: metadata.roomId,
       check_in: metadata.checkIn,
@@ -58,7 +77,6 @@ export async function POST(req: Request) {
       status: "paid",
       guest_name: metadata.name ?? "",
       guest_email: metadata.email ?? session.customer_email ?? "",
-      guest_phone: metadata.phone ?? "",
       stripe_session_id: session.id,
     })
 
@@ -71,8 +89,9 @@ export async function POST(req: Request) {
     const guestEmail = metadata.email ?? session.customer_email ?? ""
 
     if (guestEmail) {
-      sendGuestConfirmation({
+      void sendGuestConfirmation({
         name: metadata.name ?? "",
+        email: guestEmail,
         roomName: metadata.roomName ?? "",
         checkIn: fmtDate(metadata.checkIn),
         checkOut: fmtDate(metadata.checkOut),
@@ -81,10 +100,9 @@ export async function POST(req: Request) {
       })
     }
 
-    sendStaffNotification({
+    void sendStaffNotification({
       guestName: metadata.name ?? "",
       guestEmail,
-      guestPhone: metadata.phone ?? "",
       roomName: metadata.roomName ?? "",
       checkIn: fmtDate(metadata.checkIn),
       checkOut: fmtDate(metadata.checkOut),

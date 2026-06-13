@@ -2,10 +2,29 @@ import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { differenceInDays } from "date-fns"
-import { PRICE_PER_ADULT } from "@/lib/constants"
 import { checkoutSchema } from "@/lib/validation/checkout"
 
+// Dev-only in-memory rate limiter (resets per process, not suitable for multi-instance serverless)
+const rateLimit = new Map<string, number[]>()
+const RATE_LIMIT_WINDOW = 60_000
+const RATE_LIMIT_MAX = 5
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = rateLimit.get(ip) ?? []
+  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW)
+  if (recent.length >= RATE_LIMIT_MAX) return true
+  recent.push(now)
+  rateLimit.set(ip, recent)
+  return false
+}
+
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown"
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Troppe richieste. Riprova tra un minuto." }, { status: 429 })
+  }
+
   try {
     const body = await req.json()
     const parsed = checkoutSchema.safeParse(body)
@@ -67,7 +86,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const totalPrice = nights * PRICE_PER_ADULT * adults
+    const totalPrice = nights * Number(room.price) * adults
     const guests = adults + bambini
 
     const session = await stripe.checkout.sessions.create({
@@ -78,7 +97,7 @@ export async function POST(req: Request) {
             currency: "eur",
             product_data: {
               name: `Prenotazione: Camera ${room.name}`,
-              description: `${new Date(checkIn).toLocaleDateString("it-IT")} - ${new Date(checkOut).toLocaleDateString("it-IT")} (${adults} adulti${bambini ? `, ${bambini} bambini` : ""})`,
+              description: `${new Date(checkIn).toLocaleDateString(locale)} - ${new Date(checkOut).toLocaleDateString(locale)} (${adults} adulti${bambini ? `, ${bambini} bambini` : ""})`,
             },
             unit_amount: totalPrice * 100,
           },

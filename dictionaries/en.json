@@ -95,7 +95,7 @@
   },
   "success": {
     "title": "Payment Successful!",
-    "description": "Thank you for your booking. You will receive a confirmation via email.",
+    "description": "Thank you for your booking. We will contact you shortly to confirm.",
     "guest": "Guest:",
     "dates": "Dates:",
     "backHome": "Back to Home"

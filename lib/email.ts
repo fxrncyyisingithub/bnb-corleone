@@ -2,6 +2,7 @@ import { Resend } from "resend"
 
 type GuestEmailProps = {
   name: string
+  email: string
   roomName: string
   checkIn: string
   checkOut: string
@@ -12,7 +13,6 @@ type GuestEmailProps = {
 type StaffEmailProps = {
   guestName: string
   guestEmail: string
-  guestPhone: string
   roomName: string
   checkIn: string
   checkOut: string
@@ -104,7 +104,7 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
   `
 }
 
-function staffTemplate({ guestName, guestEmail, guestPhone, roomName, checkIn, checkOut, total }: StaffEmailProps) {
+function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, total }: StaffEmailProps) {
   return `
     <!DOCTYPE html>
     <html>
@@ -138,10 +138,6 @@ function staffTemplate({ guestName, guestEmail, guestPhone, roomName, checkIn, c
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Email</span></td>
                               <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${guestEmail}</span></td>
-                            </tr>
-                            <tr>
-                              <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Telefono</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${guestPhone}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0; border-top: 1px solid #cfc4c5;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Camera</span></td>
@@ -194,7 +190,7 @@ export async function sendGuestConfirmation(props: GuestEmailProps) {
   try {
     await r.emails.send({
       from: FROM,
-      to: props.name,
+      to: props.email,
       subject: "Prenotazione confermata - Corleone Guesthouse",
       html: guestTemplate(props),
     })

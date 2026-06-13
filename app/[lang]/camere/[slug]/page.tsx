@@ -3,7 +3,6 @@ import { notFound } from "next/navigation"
 import BookingForm from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
 import { ROOM_IMAGES, ROOM_OCCUPANCY } from "@/lib/rooms"
-import { PRICE_PER_ADULT } from "@/lib/constants"
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device"
 import { getDictionary } from "@/lib/dictionary"
 import { isLocale } from "@/lib/locales"
@@ -26,6 +25,8 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
   if (roomError || !room) {
     notFound()
   }
+
+  room.price = Number(room.price)
 
   const { data: reservations } = await supabase
     .from("reservations")
@@ -65,7 +66,7 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
             </div>
             <div className="flex items-center gap-2 text-secondary">
               <CreditCard className="w-5 h-5" aria-hidden />
-              <span className="text-body-md font-semibold">{dict.camere.roomDetail.pricePerPerson.replace("{price}", String(PRICE_PER_ADULT))}</span>
+              <span className="text-body-md font-semibold">{dict.camere.roomDetail.pricePerPerson.replace("{price}", String(room.price))}</span>
             </div>
           </div>
         </div>
