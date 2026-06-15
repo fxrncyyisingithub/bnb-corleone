@@ -5,6 +5,8 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { sendGuestConfirmation, sendStaffNotification } from "@/lib/email"
 import { format } from "date-fns"
 
+export const maxDuration = 30
+
 export async function POST(req: Request) {
   const payload = await req.text()
   const sig = req.headers.get("stripe-signature")
