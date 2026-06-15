@@ -24,6 +24,7 @@ function getResend() {
   if (!key) return null
   return new Resend(key)
 }
+const baseUrl = process.env.NEXT_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
 const FROM = "Corleone Guesthouse <onboarding@resend.dev>"
 
 function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: GuestEmailProps) {
@@ -84,7 +85,7 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                       Codice prenotazione: <strong style="color: #000000;">${sessionId}</strong>
                     </p>
                     <p style="font-size: 14px; line-height: 1.6; color: #5d5e66; margin: 16px 0 0;">
-                      <a href="https://corleoneguesthouse.com/contatti" style="display: inline-block; background: #000000; color: #ffffff; padding: 12px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
+                      <a href="${baseUrl}/contatti" style="display: inline-block; background: #000000; color: #ffffff; padding: 12px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
                         Contattaci
                       </a>
                     </p>

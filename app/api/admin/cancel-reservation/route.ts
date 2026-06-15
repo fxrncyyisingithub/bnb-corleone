@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
+import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function POST(req: Request) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: "Non autorizzato" }, { status: 401 })
+  }
+
   try {
     const { reservationId } = await req.json()
 

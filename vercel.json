@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/webhook/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
