@@ -1,14 +1,14 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-function getIp(req: Request): string {
+function getIp(req: Request): string | null {
   const forwarded = req.headers.get("x-forwarded-for")
   if (forwarded) return forwarded.split(",")[0].trim()
   const realIp = req.headers.get("x-real-ip")
   if (realIp) return realIp
   const vercel = req.headers.get("x-vercel-forwarded-for")
   if (vercel) return vercel
-  return "unknown"
+  return null
 }
 
 function createRatelimit() {
@@ -35,13 +35,20 @@ export async function checkRateLimit(
   if (!ratelimit) return { limited: false }
 
   const ip = getIp(req)
-  const result = await ratelimit.limit(ip)
+  if (!ip) return { limited: false }
 
-  if (!result.success) {
-    return { limited: true, remaining: result.remaining, reset: result.reset }
+  try {
+    const result = await ratelimit.limit(ip)
+
+    if (!result.success) {
+      return { limited: true, remaining: result.remaining, reset: result.reset }
+    }
+
+    return { limited: false }
+  } catch (error) {
+    console.error("Rate limiter error (fail open):", error)
+    return { limited: false }
   }
-
-  return { limited: false }
 }
 
 export function getRateLimitHeaders(result: {
