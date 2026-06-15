@@ -5,6 +5,9 @@ import { differenceInDays } from "date-fns"
 import { checkoutSchema } from "@/lib/validation/checkout"
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limiter"
 
+const vercelUrl = process.env.VERCEL_URL
+const baseUrl = process.env.NEXT_PUBLIC_URL || (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000")
+
 export async function POST(req: Request) {
   const rateLimitResult = await checkRateLimit(req)
   if (rateLimitResult.limited) {
@@ -94,8 +97,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_URL}/${locale}/success/{CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL}/${locale}/camere/${room.slug}`,
+      success_url: `${baseUrl}/${locale}/success/{CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/${locale}/camere/${room.slug}`,
       customer_email: email,
       metadata: {
         roomId,
