@@ -153,7 +153,7 @@ Il proxy rileva il dispositivo dallo User-Agent e setta l'header `x-device-type`
 
 | Route | Metodo | Descrizione |
 |-------|--------|-------------|
-| `POST /api/checkout` | - | Crea sessione Stripe Checkout (rate-limited: 5 req/min per IP) |
+| `POST /api/checkout` | - | Crea sessione Stripe Checkout (rate-limited: 5 req/10s per IP via Upstash Redis) |
 | `POST /api/webhook` | Stripe | Gestisce `checkout.session.completed` |
 | `POST /api/admin/cancel-reservation` | Admin | Rimborsa e cancella una prenotazione |
 
@@ -161,5 +161,5 @@ Il proxy rileva il dispositivo dallo User-Agent e setta l'header `x-device-type`
 
 1. Imposta le variabili d'ambiente sul tuo host (Vercel consigliato)
 2. Configura il webhook Stripe su `https://tuodominio.com/api/webhook` con evento `checkout.session.completed`
-3. (Opzionale) Sostituisci il rate-limiter in-memory con Redis/Upstash per ambienti serverless multi-instanza
+3. Configura `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN` in `.env.local` (il fallback permette le richieste senza Redis)
 4. Verifica il dominio su Resend per cambiare il mittente email da `onboarding@resend.dev` a `noreply@iltuodominio.com`

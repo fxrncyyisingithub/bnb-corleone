@@ -86,7 +86,10 @@ Data logic lives in `lib/` — components only handle rendering.
 
 ## Rate limiter (checkout)
 
-In-memory `Map<string, number[]>` — resets per process. **Not suitable for multi-instance serverless** (Vercel, etc.). Replace with external store (Redis/Upstash) before production deploy.
+`lib/rate-limiter.ts` uses `@upstash/ratelimit` with sliding window (5 req / 10s per IP).
+Centralized in Redis via `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`.
+**Safe fallback**: if env vars are missing, `checkRateLimit()` returns `{ limited: false }` — payments never blocked.
+IP extracted from `x-forwarded-for` → `x-real-ip` → `x-vercel-forwarded-for` → `"unknown"`.
 
 ## Commands
 
@@ -100,7 +103,8 @@ npm run lint     # ESLint
 
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY`,
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-`NEXT_PUBLIC_URL`, `RESEND_API_KEY`, `STAFF_EMAIL`.
+`NEXT_PUBLIC_URL`, `RESEND_API_KEY`, `STAFF_EMAIL`,
+`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`.
 
 ## DB schema (`supabase/schema.sql`)
 

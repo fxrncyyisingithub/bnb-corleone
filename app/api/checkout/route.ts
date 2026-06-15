@@ -3,26 +3,15 @@ import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { differenceInDays } from "date-fns"
 import { checkoutSchema } from "@/lib/validation/checkout"
-
-// Dev-only in-memory rate limiter (resets per process, not suitable for multi-instance serverless)
-const rateLimit = new Map<string, number[]>()
-const RATE_LIMIT_WINDOW = 60_000
-const RATE_LIMIT_MAX = 5
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const timestamps = rateLimit.get(ip) ?? []
-  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW)
-  if (recent.length >= RATE_LIMIT_MAX) return true
-  recent.push(now)
-  rateLimit.set(ip, recent)
-  return false
-}
+import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limiter"
 
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown"
-  if (isRateLimited(ip)) {
-    return NextResponse.json({ error: "Troppe richieste. Riprova tra un minuto." }, { status: 429 })
+  const rateLimitResult = await checkRateLimit(req)
+  if (rateLimitResult.limited) {
+    return NextResponse.json(
+      { error: "Troppe richieste. Riprova tra qualche secondo." },
+      { status: 429, headers: getRateLimitHeaders(rateLimitResult) }
+    )
   }
 
   try {
