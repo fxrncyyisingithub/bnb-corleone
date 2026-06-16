@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { format } from "date-fns"
 import { Metadata } from "next"
 import CancelButton from "./CancelButton"
@@ -141,12 +142,12 @@ export default async function AdminReservations({
               Applica
             </button>
             {(filterRoom || filterDal || filterAl) && (
-              <a
+              <Link
                 href="/admin/reservations"
                 className="text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors"
               >
                 Cancella filtri
-              </a>
+              </Link>
             )}
             <input type="hidden" name="month" value={calendarMonth} />
           </form>
