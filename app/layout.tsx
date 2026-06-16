@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 
 const inter = Inter({
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="it" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex flex-col bg-surface text-on-surface overflow-x-hidden">
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
