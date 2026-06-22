@@ -1,0 +1,133 @@
+{
+  "nodes": [
+    {
+      "id": "cosa_visitare_chiesa_madre_landmark",
+      "label": "Chiesa Madre di Corleone",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/immagini/cosa-visitare/chiesa-madre.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "cosa_visitare_cidma_landmark",
+      "label": "CIDMA - Centro Internazionale di Documentazione Mafia e Antimafia",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/immagini/cosa-visitare/cidma.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "cosa_visitare_due_rocche_landmark",
+      "label": "Due Rocche (Two Fortresses)",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/immagini/cosa-visitare/due-rocche.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "corleone_town",
+      "label": "Corleone",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "cosa_visitare_concept",
+      "label": "Cosa Visitare (Things to Visit)",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "cosa_visitare_chiesa_madre_landmark",
+      "to": "corleone_town",
+      "type": "located_in",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_cidma_landmark",
+      "to": "corleone_town",
+      "type": "located_in",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_due_rocche_landmark",
+      "to": "corleone_town",
+      "type": "located_in",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_chiesa_madre_landmark",
+      "to": "cosa_visitare_concept",
+      "type": "instance_of",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_cidma_landmark",
+      "to": "cosa_visitare_concept",
+      "type": "instance_of",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_due_rocche_landmark",
+      "to": "cosa_visitare_concept",
+      "type": "instance_of",
+      "kind": "INFERRED",
+      "confidence_score": 0.95
+    },
+    {
+      "from": "cosa_visitare_concept",
+      "to": "corleone_town",
+      "type": "applies_to",
+      "kind": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "from": "cosa_visitare_chiesa_madre_landmark",
+      "to": "cosa_visitare_due_rocche_landmark",
+      "type": "ambiguous_subject_identification",
+      "kind": "AMBIGUOUS",
+      "confidence_score": 0.2
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "he_cosa_visitare_set",
+      "nodes": [
+        "cosa_visitare_chiesa_madre_landmark",
+        "cosa_visitare_cidma_landmark",
+        "cosa_visitare_due_rocche_landmark",
+        "corleone_town"
+      ],
+      "label": "Landmarks to visit in Corleone",
+      "kind": "INFERRED",
+      "confidence_score": 0.85
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

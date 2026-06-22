@@ -1,0 +1,117 @@
+{
+  "nodes": [
+    {
+      "id": "cosa_visitare_chiesa_madre_public_landmark",
+      "label": "Chiesa Madre (public served image)",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/chiesa-madre.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "cosa_visitare_cidma_public_landmark",
+      "label": "CIDMA - Centro Italiano Documentazione Mafia Antimafia (public served image)",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/cidma.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "cosa_visitare_due_rocche_public_landmark",
+      "label": "Due Rocche - Two Fortresses near Corleone (public served image)",
+      "file_type": "image",
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/due-rocche.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "cosa_visitare_chiesa_madre_public_landmark",
+      "target": "cosa_visitare_chiesa_madre_landmark",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/chiesa-madre.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "cosa_visitare_cidma_public_landmark",
+      "target": "cosa_visitare_cidma_landmark",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/cidma.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "cosa_visitare_due_rocche_public_landmark",
+      "target": "cosa_visitare_due_rocche_landmark",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/due-rocche.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "cosa_visitare_chiesa_madre_public_landmark",
+      "target": "cosa_visitare_cidma_public_landmark",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/chiesa-madre.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "cosa_visitare_cidma_public_landmark",
+      "target": "cosa_visitare_due_rocche_public_landmark",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/cidma.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "cosa_visitare_chiesa_madre_public_landmark",
+      "target": "cosa_visitare_due_rocche_public_landmark",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/due-rocche.png",
+      "source_location": null,
+      "weight": 0.8
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "corleone_landmarks_set_public",
+      "label": "Corleone cosa-visitare landmark images (public served)",
+      "participants": [
+        "cosa_visitare_chiesa_madre_public_landmark",
+        "cosa_visitare_cidma_public_landmark",
+        "cosa_visitare_due_rocche_public_landmark"
+      ],
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "/home/fxrncyy/Progetti/bnb-corleone/public/immagini/cosa-visitare/chiesa-madre.png",
+      "source_location": null
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
