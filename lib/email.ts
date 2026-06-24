@@ -25,7 +25,7 @@ function getResend() {
   return new Resend(key)
 }
 const baseUrl = process.env.NEXT_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
-const FROM = "Corleone Guesthouse <onboarding@resend.dev>"
+const FROM = "Corleone Guesthouse <noreply@corleoneguesthouse.com>"
 
 function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: GuestEmailProps) {
   return `
