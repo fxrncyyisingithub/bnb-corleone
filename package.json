@@ -18,8 +18,15 @@
     "@supabase/supabase-js": "^2.108.1",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+>>>>>>> Stashed changes
+=======
+    "@vercel/analytics": "^2.0.1",
+>>>>>>> main
     "botid": "^1.5.11",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.17.0",
