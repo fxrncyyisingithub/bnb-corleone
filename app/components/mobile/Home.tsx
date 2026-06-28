@@ -14,7 +14,7 @@ type Dict = {
 export default function MobileHome({ dict, lang }: { dict: Dict; lang: Locale }) {
   return (
     <>
-      <section className="relative h-[85vh] w-full flex flex-col justify-end p-margin-mobile">
+      <section className="relative h-[85vh] w-full flex flex-col justify-start pt-[8vh] p-margin-mobile">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
             src={hero}
@@ -27,7 +27,7 @@ export default function MobileHome({ dict, lang }: { dict: Dict; lang: Locale })
         </div>
 
         <div className="z-10 text-on-primary mb-10">
-          <h1 className="text-[52px] font-bold mb-4 leading-tight">
+          <h1 className="text-[60px] font-bold mb-4 leading-tight">
             {dict.heroTitle}
           </h1>
           <p className="text-body-md text-surface-dim mb-8">
