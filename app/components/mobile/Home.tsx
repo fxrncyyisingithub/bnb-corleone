@@ -27,10 +27,10 @@ export default function MobileHome({ dict, lang }: { dict: Dict; lang: Locale })
         </div>
 
         <div className="z-10 text-on-primary mb-10">
-          <h1 className="text-[52px] font-bold mb-4 leading-tight">
+          <h1 className="text-[40px] font-bold mb-4 leading-tight">
             {dict.heroTitle}
           </h1>
-          <p className="text-body-md text-surface-dim mb-8">
+          <p className="text-body-lg text-surface-dim mb-8">
             {dict.heroDescription}
           </p>
           <Link
