@@ -31,7 +31,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   return (
     <>
-      <section className="relative h-[80vh] w-full flex flex-col justify-start pt-[10vh] p-margin-desktop">
+      <section className="relative h-[80vh] w-full flex flex-col justify-center p-margin-desktop">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
             src={hero}
