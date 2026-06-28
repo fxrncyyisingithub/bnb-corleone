@@ -68,8 +68,8 @@
   --font-label-sm: var(--font-inter), system-ui, sans-serif;
 
   /* ===== FONT SIZES (with line-height pairing) ===== */
-  --font-size-display: 170px;
-  --font-size-display--line-height: 1.1;
+  --font-size-display: 72px;
+  --font-size-display--line-height: 1;
   --font-size-headline-lg: 48px;
   --font-size-headline-lg--line-height: 1.2;
   --font-size-headline-lg-mobile: 32px;
