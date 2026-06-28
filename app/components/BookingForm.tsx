@@ -179,7 +179,6 @@ export default function BookingForm({ room, occupancy, bookedDates, dict, lang }
           }}
           modifiers={{ booked: bookedDates.map((d) => new Date(d)) }}
           modifiersStyles={{
-            selected: { backgroundColor: "#1d1d1d", color: "#fff" },
             booked: { backgroundColor: "#fecaca", color: "#991b1b", textDecoration: "line-through" },
           }}
         />
