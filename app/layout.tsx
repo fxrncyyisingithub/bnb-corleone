@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
->>>>>>> Stashed changes
-=======
-import { Analytics } from "@vercel/analytics/next";
->>>>>>> main
 import "./globals.css";
 
 const inter = Inter({
@@ -35,15 +28,8 @@ export default function RootLayout({
     <html lang="it" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex flex-col bg-surface text-on-surface overflow-x-hidden">
         {children}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
         <Analytics />
         <SpeedInsights />
->>>>>>> Stashed changes
-=======
-        <Analytics />
->>>>>>> main
       </body>
     </html>
   );
