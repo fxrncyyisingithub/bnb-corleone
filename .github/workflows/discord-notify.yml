@@ -1,0 +1,87 @@
+name: Discord Notifications
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    types: [opened, closed, reopened]
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get commit info
+        id: info
+        run: |
+          echo "COMMIT_MSG=$(echo '${{ github.event.head_commit.message }}' | head -n1)" >> $GITHUB_OUTPUT
+          echo "AUTHOR=${{ github.event.head_commit.author.name }}" >> $GITHUB_OUTPUT
+          echo "SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+
+      - name: Notify Push
+        if: github.event_name == 'push'
+        run: |
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_GIT }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [{
+                "title": "📦 Push su `${{ steps.info.outputs.BRANCH }}`",
+                "description": "**${{ steps.info.outputs.COMMIT_MSG }}**",
+                "color": 3066993,
+                "fields": [
+                  {"name": "Author", "value": "${{ steps.info.outputs.AUTHOR }}", "inline": true},
+                  {"name": "Commit", "value": "`${{ steps.info.outputs.SHA }}`", "inline": true}
+                ],
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }]
+            }'
+
+      - name: Notify PR
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+            COLOR=3066993
+            ICON="🔀"
+            ACTION="Merged"
+          elif [ "${{ github.event.action }}" = "closed" ]; then
+            COLOR=15158332
+            ICON="❌"
+            ACTION="Closed"
+          else
+            COLOR=3447003
+            ICON="📬"
+            ACTION="Opened"
+          fi
+
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_GIT }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"$ICON PR #${{ github.event.number }} — $ACTION\",
+                \"description\": \"**${{ github.event.pull_request.title }}**\n[${{ github.event.pull_request.html_url }}](${{ github.event.pull_request.html_url }})\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  {\"name\": \"Branch\", \"value\": \"\`${{ github.event.pull_request.head.ref }}\` → \`${{ github.event.pull_request.base.ref }}\`\", \"inline\": true},
+                  {\"name\": \"Author\", \"value\": \"${{ github.event.pull_request.user.login }}\", \"inline\": true},{\"name\": \"\", \"value\": \"\", \"inline\": false}
+                ]
+              }]
+            }"
+
+      - name: Notify Release
+        if: github.event_name == 'release'
+        run: |
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_GIT }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [{
+                "title": "🏁 Release ${{ github.event.release.tag_name }}",
+                "description": "'"$([[ -n "${{ github.event.release.body }}" ]] && echo "${{ github.event.release.body }}" | head -c 200)"'",
+                "color": 10181046,
+                "fields": [
+                  {"name": "Author", "value": "${{ github.event.release.author.login }}", "inline": true},
+                  {"name": "URL", "value": "[${{ github.event.release.tag_name }}](${{ github.event.release.html_url }})"}
+                ]
+              }]
+            }'
