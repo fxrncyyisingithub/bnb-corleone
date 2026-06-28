@@ -44,7 +44,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
 
         <div className="z-10 text-on-primary mb-8 max-w-container-max mx-auto w-full">
-          <h1 className="text-display font-black mb-4 leading-[1]">
+          <h1 className="text-display font-black mb-4">
             {dict.home.heroTitle}
           </h1>
           <p className="text-body-md max-w-sm text-surface-dim mb-8">
