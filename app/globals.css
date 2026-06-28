@@ -118,6 +118,9 @@
   width: 100%;
   max-width: 260px;
   margin-inline: auto;
+  --rdp-range_middle-background-color: #e5e5e5;
+  --rdp-range_start-color: #1d1d1d;
+  --rdp-range_end-color: #1d1d1d;
 }
 
 .booking-calendar .rdp-months {
@@ -152,6 +155,10 @@
   height: auto;
   border-radius: 0.25rem;
   font-size: 0.6875rem;
+}
+
+.booking-calendar .rdp-range_middle .rdp-day_button {
+  border-radius: 0;
 }
 
 .booking-calendar .rdp-weekday {
