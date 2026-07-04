@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Corleone Guesthouse — repo guide
 
+## Regole per agenti AI
+
+- Quando comunichi con altri agenti, DEVI identificarti come agente (es. "Dev 🛠️, Agente Dev") e MAI impersonare Francy.
+- Nelle comunicazioni cross-agent, usa il tuo nome agente + emoji + ruolo.
+
 ## Framework quirks (Next.js 16)
 
 - **`proxy.ts` replaces `middleware.ts`** — request interception lives in `proxy.ts` (root), NOT `middleware.ts`. Export `export async function proxy(request: NextRequest)`. Using `middleware.ts` will fail silently.
