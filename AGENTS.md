@@ -98,11 +98,20 @@ IP extracted from `x-forwarded-for` → `x-real-ip` → `x-vercel-forwarded-for`
 
 ## Commands
 
+Local development uses **bun** (scripts invoked with `bun run`). Production
+builds on Vercel run on **pnpm** against the tracked `pnpm-lock.yaml`.
+
 ```sh
-npm run dev      # local dev (needs .env.local)
-npm run build    # typecheck + production build
-npm run lint     # ESLint
+bun run dev      # local dev (needs .env.local)
+bun run build    # typecheck + production build
+bun run lint     # ESLint
 ```
+
+> `bun install` works locally for fast node_modules creation — `bun.lock`
+> is gitignored and never reaches production. If you add or bump a
+> dependency, regenerate `pnpm-lock.yaml` (`pnpm install`) before merge,
+> otherwise Vercel will build with a different version than your local
+> install.
 
 ## Key env vars (`.env.local`)
 

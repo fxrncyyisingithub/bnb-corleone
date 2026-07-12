@@ -44,8 +44,8 @@ next-env.d.ts
 #graphify-out
 graphify-out
 
-#bun  
+# bun
 bun.lock
 
-#npm (intrusive, accidentally tracked in past)
+# npm
 package-lock.json

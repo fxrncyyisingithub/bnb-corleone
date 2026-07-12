@@ -1,0 +1,47 @@
+name: Lockfile guard
+
+on:
+  push:
+  pull_request:
+
+# Avoid duplicate runs on rapid pushes to the same ref
+concurrency:
+  group: lockfile-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Single tracked lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assert exactly pnpm-lock.yaml is tracked
+        run: |
+          set -euo pipefail
+
+          # These lockfiles must NEVER be tracked
+          bad=$(git ls-files | grep -E '(^|/)(package-lock\.json|bun\.lock)$' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Unwanted tracked lockfiles detected:"
+            echo "$bad"
+            echo ""
+            echo "Only pnpm-lock.yaml should be tracked."
+            echo "If you ran \`npm install\` or \`bun install\`, remove the file:"
+            echo "  git rm --cached package-lock.json   # if present"
+            exit 1
+          fi
+
+          # pnpm-lock.yaml must be tracked
+          # NOTE: grep -q inside `if !` returns 1 on no-match and is intentionally
+          # caught by the negation. Do NOT pipe through `|| true` — exit 1 here
+          # would skip the failure branch, which is the opposite of what we want.
+          if ! git ls-files | grep -qE '(^|/)pnpm-lock\.yaml$'; then
+            echo "::error::pnpm-lock.yaml must be tracked as the single source of truth."
+            exit 1
+          fi
+
+          echo "OK: only pnpm-lock.yaml is tracked."
