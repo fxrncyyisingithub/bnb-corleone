@@ -46,3 +46,6 @@ graphify-out
 
 #bun  
 bun.lock
+
+#npm (intrusive, accidentally tracked in past)
+package-lock.json
