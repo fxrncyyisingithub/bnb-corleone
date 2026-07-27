@@ -2,7 +2,7 @@
 
 Sito web di prenotazione camere per una guesthouse a Corleone (Sicilia), con checkout Stripe, pannello admin Supabase, email Resend, supporto multilingua (IT/EN/DE) e UI device-aware.
 
-**Deploy live**: [https://bnb-corleone.vercel.app](https://bnb-corleone.vercel.app)  
+**Deploy live**: [Corleone Guesthouse](https://corleoneguesthouse.com)  
 **Stack**: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Supabase (PostgreSQL + Auth + Storage) · Stripe Checkout · Resend · Upstash Redis
 
 ---
@@ -127,33 +127,6 @@ EXCLUDE USING GIST (
 - `service_role` bypassa RLS (webhook)
 
 **Seed**: 4 camere (101–104) a €40/persona/notte, capacità 2–3.
-
----
-
-## 🚀 Setup locale
-
-```bash
-# 1. Clona e installa
-git clone https://github.com/fxrncyyisingithub/bnb-corleone
-cd bnb-corleone
-npm install
-
-# 2. Variabili d'ambiente
-cp .env.example .env.local
-# Compila .env.local (vedi sezione sotto)
-
-# 3. Database
-# Esegui supabase/schema.sql nell'SQL Editor del progetto Supabase
-
-# 4. Webhook Stripe (dev)
-stripe listen --forward-to http://localhost:3000/api/webhook
-# Copia whsec_... in STRIPE_WEBHOOK_SECRET
-
-# 5. Avvia
-npm run dev
-```
-
-Apri [http://localhost:3000](http://localhost:3000).
 
 ---
 
