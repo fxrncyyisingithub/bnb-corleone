@@ -133,4 +133,4 @@ bun run lint     # ESLint
 
 - Rooms: SELECT public, ALL for authenticated.
 - Reservations: SELECT only `status=paid` for public, ALL for authenticated.
-- Service role (webhook) bypasses RLS entirely.
+- Service role (webhook) bypasses RLS entirely
