@@ -3,7 +3,22 @@ import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
+function isSameOrigin(req: Request): boolean {
+  const origin = req.headers.get("origin")
+  if (!origin) return true
+  const host = req.headers.get("host")
+  try {
+    return new URL(origin).host === host
+  } catch {
+    return false
+  }
+}
+
 export async function POST(req: Request) {
+  if (!isSameOrigin(req)) {
+    return NextResponse.json({ error: "Origine non consentita" }, { status: 403 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

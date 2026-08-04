@@ -27,6 +27,15 @@ function getResend() {
 const baseUrl = process.env.NEXT_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
 const FROM = "Corleone Guesthouse <noreply@corleoneguesthouse.com>"
 
+function esc(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
 function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: GuestEmailProps) {
   return `
     <!DOCTYPE html>
@@ -47,7 +56,7 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                       Grazie per la tua prenotazione
                     </h2>
                     <p style="font-size: 16px; line-height: 1.6; color: #5d5e66; margin: 0 0 24px;">
-                      Ciao <strong style="color: #000000;">${name}</strong>, la tua prenotazione è stata confermata.
+                      Ciao <strong style="color: #000000;">${esc(name)}</strong>, la tua prenotazione è stata confermata.
                     </p>
                   </td>
                 </tr>
@@ -59,19 +68,19 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                           <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Camera</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${roomName}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${esc(roomName)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Check-in</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${checkIn}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${esc(checkIn)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Check-out</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${checkOut}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${esc(checkOut)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Totale</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">€${total}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">€${esc(total)}</span></td>
                             </tr>
                           </table>
                         </td>
@@ -82,7 +91,7 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                 <tr>
                   <td style="padding: 24px 32px 40px;">
                     <p style="font-size: 14px; line-height: 1.6; color: #5d5e66; margin: 0;">
-                      Codice prenotazione: <strong style="color: #000000;">${sessionId}</strong>
+                      Codice prenotazione: <strong style="color: #000000;">${esc(sessionId)}</strong>
                     </p>
                     <p style="font-size: 14px; line-height: 1.6; color: #5d5e66; margin: 16px 0 0;">
                       <a href="${baseUrl}/contatti" style="display: inline-block; background: #000000; color: #ffffff; padding: 12px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
@@ -136,27 +145,27 @@ function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, tot
                           <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Ospite</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${guestName}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${esc(guestName)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Email</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${guestEmail}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${esc(guestEmail)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0; border-top: 1px solid #cfc4c5;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Camera</span></td>
-                              <td style="padding: 4px 0; border-top: 1px solid #cfc4c5; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${roomName}</span></td>
+                              <td style="padding: 4px 0; border-top: 1px solid #cfc4c5; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">${esc(roomName)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Check-in</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${checkIn}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${esc(checkIn)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Check-out</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${checkOut}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000;">${esc(checkOut)}</span></td>
                             </tr>
                             <tr>
                               <td style="padding: 4px 0;"><span style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #5d5e66; font-weight: 600;">Totale</span></td>
-                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">€${total}</span></td>
+                              <td style="padding: 4px 0; text-align: right;"><span style="font-size: 16px; color: #000000; font-weight: 600;">€${esc(total)}</span></td>
                             </tr>
                           </table>
                         </td>
@@ -167,7 +176,7 @@ function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, tot
                 <tr>
                   <td style="padding: 24px 32px 40px;">
                     <p style="font-size: 14px; line-height: 1.6; color: #5d5e66; margin: 0;">
-                      <a href="mailto:${guestEmail}" style="color: #000000;">Rispondi all'ospite</a>
+                      <a href="mailto:${encodeURIComponent(guestEmail)}" style="color: #000000;">Rispondi all'ospite</a>
                     </p>
                   </td>
                 </tr>

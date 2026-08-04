@@ -40,21 +40,29 @@ CREATE POLICY "Rooms are viewable by everyone."
 -- Only authenticated users (admins) can modify rooms
 CREATE POLICY "Rooms are modifiable by authenticated users."
   ON rooms FOR ALL
-  USING (auth.role() = 'authenticated');
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
 
 -- RLS POLICIES FOR RESERVATIONS
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
 
--- Anyone can read reservations (needed to check availability without seeing details, so we restrict columns if possible, but for simplicity we allow SELECT)
--- Better: Let's only expose public fields or handle availability logic via an RPC, but for simplicity:
-CREATE POLICY "Reservations are viewable by everyone for availability check."
-  ON reservations FOR SELECT
-  USING (status = 'paid'); -- We only care about paid overlapping dates for the public
-
+-- No public policy on the base table: it holds guest PII and the anon key is public.
 -- Admins can do everything
 CREATE POLICY "Reservations are fully accessible by authenticated users."
   ON reservations FOR ALL
-  USING (auth.role() = 'authenticated');
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Public availability is exposed only through this column-limited view.
+CREATE OR REPLACE VIEW reservation_availability AS
+  SELECT room_id, check_in, check_out
+  FROM reservations
+  WHERE status = 'paid';
+
+REVOKE ALL ON reservation_availability FROM anon, authenticated;
+GRANT SELECT ON reservation_availability TO anon, authenticated;
 
 -- Service Role (Webhook) can do everything
 -- Note: Service Role bypasses RLS by default.

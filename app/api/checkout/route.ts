@@ -49,10 +49,9 @@ export async function POST(req: Request) {
     }
 
     const { data: conflicts, error: conflictError } = await supabase
-      .from("reservations")
-      .select("id")
+      .from("reservation_availability")
+      .select("room_id")
       .eq("room_id", roomId)
-      .eq("status", "paid")
       .lt("check_in", checkOut)
       .gt("check_out", checkIn)
 
@@ -91,7 +90,7 @@ export async function POST(req: Request) {
               name: `Prenotazione: Camera ${room.name}`,
               description: `${new Date(checkIn).toLocaleDateString(locale)} - ${new Date(checkOut).toLocaleDateString(locale)} (${adults} adulti${bambini ? `, ${bambini} bambini` : ""})`,
             },
-            unit_amount: totalPrice * 100,
+            unit_amount: Math.round(totalPrice * 100),
           },
           quantity: 1,
         },

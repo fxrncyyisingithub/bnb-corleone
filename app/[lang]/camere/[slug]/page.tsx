@@ -29,10 +29,9 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
   room.price = Number(room.price)
 
   const { data: reservations } = await supabase
-    .from("reservations")
+    .from("reservation_availability")
     .select("check_in, check_out")
     .eq("room_id", room.id)
-    .eq("status", "paid")
 
   const bookedDates: string[] = []
   reservations?.forEach((res) => {
