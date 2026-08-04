@@ -1,1 +1,0 @@
-// read prices from db, this is useless 

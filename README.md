@@ -130,6 +130,37 @@ EXCLUDE USING GIST (
 
 ---
 
+## 🚀 Setup locale
+
+```bash
+# 1. Clona e installa
+git clone https://github.com/fxrncyyisingithub/bnb-corleone
+cd bnb-corleone
+pnpm install            # oppure: bun install (bun.lock è gitignorato)
+
+# 2. Variabili d'ambiente
+cp .env.example .env.local
+# Compila .env.local (vedi sezione sotto)
+
+# 3. Database
+# Esegui supabase/schema.sql nell'SQL Editor del progetto Supabase
+
+# 4. Webhook Stripe (dev)
+stripe listen --forward-to http://localhost:3000/api/webhook
+# Copia whsec_... in STRIPE_WEBHOOK_SECRET
+
+# 5. Avvia
+pnpm run dev            # oppure: bun run dev
+```
+
+Apri [http://localhost:3000](http://localhost:3000).
+
+> `pnpm-lock.yaml` è l'unico lockfile tracciato ed è la fonte di verità per i
+> build su Vercel: dopo aver aggiunto o aggiornato una dipendenza rigenera il
+> lockfile con `pnpm install` e committalo.
+
+---
+
 ## ⚙ Variabili d'ambiente (`.env.local`)
 
 ```bash
