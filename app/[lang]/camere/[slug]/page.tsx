@@ -2,18 +2,15 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import BookingForm from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
-import { ROOM_IMAGES, ROOM_OCCUPANCY } from "@/lib/rooms"
-import { getRequestDeviceType, isMobileDevice } from "@/lib/device"
-import { getDictionary } from "@/lib/dictionary"
-import { isLocale } from "@/lib/locales"
+import { ROOM_IMAGES, ROOM_OCCUPANCY, maxAdults } from "@/lib/rooms"
+import { getBookedDates } from "@/lib/reservations"
+import { resolveLocalePage } from "@/lib/page-locale"
 import MobileRoomDetail from "@/app/components/mobile/RoomDetail"
 import { User, CreditCard } from "lucide-react"
 
 export default async function RoomPage({ params }: { params: Promise<{ lang: string; slug: string }> }) {
-  const { lang, slug } = await params
-  if (!isLocale(lang)) notFound()
-
-  const dict = await getDictionary(lang)
+  const { slug } = await params
+  const { lang, dict, isMobile } = await resolveLocalePage(params)
   const supabase = await createClient()
 
   const { data: room, error: roomError } = await supabase
@@ -47,22 +44,13 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
     )
   }
 
-  const bookedDates: string[] = []
-  reservations?.forEach((res) => {
-    const current = new Date(res.check_in)
-    const end = new Date(res.check_out)
-    while (current < end) {
-      bookedDates.push(current.toISOString().split("T")[0])
-      current.setDate(current.getDate() + 1)
-    }
-  })
+  const bookedDates = getBookedDates(reservations)
 
   const images = ROOM_IMAGES[room.slug] ?? ROOM_IMAGES["101"]
   const occupancy = ROOM_OCCUPANCY[room.slug] ?? ROOM_OCCUPANCY["101"]
-  const maxCapacity = Math.max(...occupancy.map(o => o.adults))
-  const deviceType = await getRequestDeviceType()
+  const maxCapacity = maxAdults(occupancy)
 
-  if (isMobileDevice(deviceType)) {
+  if (isMobile) {
     return <MobileRoomDetail room={room} occupancy={occupancy} images={images} bookedDates={bookedDates} roomDict={dict.camere.roomDetail} bookingDict={dict.booking} lang={lang} />
   }
 

@@ -1,4 +1,6 @@
 import { Resend } from "resend"
+import { emailTemplate } from "@/lib/email-template"
+import { getBaseUrl } from "@/lib/base-url"
 
 type GuestEmailProps = {
   name: string
@@ -27,7 +29,7 @@ function getResend() {
   }
   return new Resend(key)
 }
-const baseUrl = process.env.NEXT_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+const baseUrl = getBaseUrl()
 const FROM = "Corleone Guesthouse <noreply@corleoneguesthouse.com>"
 
 function esc(value: string): string {
@@ -100,23 +102,9 @@ function guestTemplate({ name, roomName, checkIn, checkOut, total, sessionId }: 
                       <a href="${baseUrl}/contatti" style="display: inline-block; background: #000000; color: #ffffff; padding: 12px 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
                         Contattaci
                       </a>
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 24px 32px; background: #f3f3f3; border-top: 1px solid #cfc4c5;">
-                    <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #4c4546; margin: 0;">
-                      &copy; ${new Date().getFullYear()} CORLEONE GUESTHOUSE. ALL RIGHTS RESERVED.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </body>
-    </html>
-  `
+                    </p>`,
+    footer: `&copy; ${new Date().getFullYear()} CORLEONE GUESTHOUSE. ALL RIGHTS RESERVED.`,
+  })
 }
 
 function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, total }: StaffEmailProps) {
@@ -199,26 +187,34 @@ function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, tot
   `
 }
 
-export async function sendGuestConfirmation(props: GuestEmailProps) {
-  const r = getResend()
-  if (!r) return
+/** Sends a transactional email, throwing when Resend rejects it. */
+async function send(
+  { to, subject, html }: { to: string | string[]; subject: string; html: string },
+  label: string
+) {
+  const resend = getResend()
+  if (!resend) return
 
-  const { error } = await r.emails.send({
-    from: FROM,
-    to: props.email,
-    subject: "Prenotazione confermata - Corleone Guesthouse",
-    html: guestTemplate(props),
-  })
+  const { error } = await resend.emails.send({ from: FROM, to, subject, html })
 
   if (error) {
-    throw new Error(`Resend rejected the guest confirmation: ${error.name} - ${error.message}`)
+    throw new Error(`Resend rejected the ${label}: ${error.name} - ${error.message}`)
   }
+}
+
+export async function sendGuestConfirmation(props: GuestEmailProps) {
+  await send(
+    {
+      to: props.email,
+      subject: "Prenotazione confermata - Corleone Guesthouse",
+      html: guestTemplate(props),
+    },
+    "guest confirmation"
+  )
 }
 
 export async function sendStaffNotification(props: StaffEmailProps) {
   const raw = process.env.STAFF_EMAIL
-  const r = getResend()
-  if (!r) return
 
   if (!raw) {
     console.warn("STAFF_EMAIL is not set: skipping staff notification")
@@ -235,14 +231,12 @@ export async function sendStaffNotification(props: StaffEmailProps) {
     return
   }
 
-  const { error } = await r.emails.send({
-    from: FROM,
-    to,
-    subject: `Nuova prenotazione: ${props.guestName} - ${props.roomName}`,
-    html: staffTemplate(props),
-  })
-
-  if (error) {
-    throw new Error(`Resend rejected the staff notification: ${error.name} - ${error.message}`)
-  }
+  await send(
+    {
+      to,
+      subject: `Nuova prenotazione: ${props.guestName} - ${props.roomName}`,
+      html: staffTemplate(props),
+    },
+    "staff notification"
+  )
 }
