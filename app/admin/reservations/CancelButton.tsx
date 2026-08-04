@@ -17,14 +17,18 @@ export default function CancelButton({ reservationId }: { reservationId: string 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reservationId }),
       })
-      const data = await res.json()
-      if (data.success) {
-        router.refresh()
-      } else {
-        alert(data.error || "Errore durante la cancellazione")
+      const data = await res.json().catch(() => null)
+
+      if (!res.ok || !data?.success) {
+        console.error("Cancel reservation failed:", res.status, data)
+        alert(data?.error || `Errore durante la cancellazione (HTTP ${res.status})`)
         setLoading(false)
+        return
       }
-    } catch {
+
+      router.refresh()
+    } catch (err) {
+      console.error("Cancel reservation request could not be sent:", err)
       alert("Errore di connessione")
       setLoading(false)
     }

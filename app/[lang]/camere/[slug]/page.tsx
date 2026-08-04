@@ -22,17 +22,31 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
     .eq("slug", slug)
     .single()
 
-  if (roomError || !room) {
+  // PGRST116 = no rows returned; other errors are backend failures and must not be
+  // rendered as a 404.
+  if (roomError && roomError.code !== "PGRST116") {
+    throw new Error(`Failed to load room "${slug}": ${roomError.message}`)
+  }
+
+  if (!room) {
     notFound()
   }
 
   room.price = Number(room.price)
 
-  const { data: reservations } = await supabase
+  const { data: reservations, error: reservationsError } = await supabase
     .from("reservations")
     .select("check_in, check_out")
     .eq("room_id", room.id)
     .eq("status", "paid")
+
+  // Swallowing this would render every night as available and let guests pay for
+  // dates that are already booked.
+  if (reservationsError) {
+    throw new Error(
+      `Failed to load booked dates for room "${slug}": ${reservationsError.message}`
+    )
+  }
 
   const bookedDates: string[] = []
   reservations?.forEach((res) => {

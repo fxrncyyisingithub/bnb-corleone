@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
 import { format } from "date-fns"
 import { CheckCircle } from "lucide-react"
@@ -24,11 +25,17 @@ export default async function Success({
 
   const dict = await getDictionary(lang)
 
-  let session
+  let session: Stripe.Checkout.Session
   try {
     session = await stripe.checkout.sessions.retrieve(session_id)
-  } catch {
-    notFound()
+  } catch (error) {
+    // Only an unknown session id is a 404; a Stripe outage must surface as an error
+    // instead of telling a paying guest their booking does not exist.
+    if (error instanceof Stripe.errors.StripeError && error.type === "StripeInvalidRequestError") {
+      notFound()
+    }
+    console.error("Failed to retrieve Stripe session:", session_id, error)
+    throw error
   }
 
   if (session.payment_status !== "paid") {

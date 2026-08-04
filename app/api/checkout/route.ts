@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { differenceInDays } from "date-fns"
@@ -17,8 +18,14 @@ export async function POST(req: Request) {
     )
   }
 
+  let body: unknown
   try {
-    const body = await req.json()
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: "Corpo della richiesta non valido" }, { status: 400 })
+  }
+
+  try {
     const parsed = checkoutSchema.safeParse(body)
 
     if (!parsed.success) {
@@ -37,7 +44,17 @@ export async function POST(req: Request) {
       .eq("id", roomId)
       .single()
 
-    if (roomError || !room) {
+    // PGRST116 = no rows returned by .single(); anything else is a real failure
+    // and must not be reported to the guest as "room not found".
+    if (roomError && roomError.code !== "PGRST116") {
+      console.error("Failed to load room:", roomId, roomError)
+      return NextResponse.json(
+        { error: "Errore durante il caricamento della camera" },
+        { status: 500 }
+      )
+    }
+
+    if (!room) {
       return NextResponse.json({ error: "Camera non trovata" }, { status: 404 })
     }
 
@@ -57,6 +74,7 @@ export async function POST(req: Request) {
       .gt("check_out", checkIn)
 
     if (conflictError) {
+      console.error("Availability check failed:", roomId, conflictError)
       return NextResponse.json(
         { error: "Errore durante il controllo della disponibilità" },
         { status: 500 }
@@ -114,9 +132,25 @@ export async function POST(req: Request) {
       },
     })
 
+    if (!session.url) {
+      console.error("Stripe session created without a checkout URL:", session.id)
+      return NextResponse.json(
+        { error: "Impossibile avviare il pagamento. Riprova." },
+        { status: 502 }
+      )
+    }
+
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error("Checkout error:", error)
+
+    if (error instanceof Stripe.errors.StripeError) {
+      return NextResponse.json(
+        { error: "Impossibile avviare il pagamento. Riprova." },
+        { status: 502 }
+      )
+    }
+
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
