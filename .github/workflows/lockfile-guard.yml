@@ -45,3 +45,39 @@ jobs:
           fi
 
           echo "OK: only pnpm-lock.yaml is tracked."
+
+      - name: Assert no merge conflict markers
+        run: |
+          set -euo pipefail
+
+          marked=$(git ls-files -z | xargs -0 grep -lE '^(<<<<<<< |>>>>>>> |=======$)' || true)
+          if [ -n "$marked" ]; then
+            echo "::error::Merge conflict markers committed in:"
+            echo "$marked"
+            exit 1
+          fi
+
+          echo "OK: no conflict markers."
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # Vercel installs with --frozen-lockfile: this fails if pnpm-lock.yaml
+      # drifts from package.json (e.g. a bumped specifier without a re-lock).
+      - name: Install with frozen lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      # next-env.d.ts / route types are gitignored, so generate them first
+      - name: Typecheck
+        run: |
+          pnpm exec next typegen
+          pnpm exec tsc --noEmit

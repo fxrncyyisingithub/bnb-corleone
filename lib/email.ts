@@ -23,7 +23,10 @@ type StaffEmailProps = {
 
 function getResend() {
   const key = process.env.RESEND_API_KEY
-  if (!key) return null
+  if (!key) {
+    console.warn("RESEND_API_KEY is not set: skipping email delivery")
+    return null
+  }
   return new Resend(key)
 }
 const baseUrl = getBaseUrl()
@@ -71,17 +74,18 @@ function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, tot
   })
 }
 
+/** Sends a transactional email, throwing when Resend rejects it. */
 async function send(
   { to, subject, html }: { to: string | string[]; subject: string; html: string },
-  errorLabel: string
+  label: string
 ) {
   const resend = getResend()
   if (!resend) return
 
-  try {
-    await resend.emails.send({ from: FROM, to, subject, html })
-  } catch (err) {
-    console.error(errorLabel, err)
+  const { error } = await resend.emails.send({ from: FROM, to, subject, html })
+
+  if (error) {
+    throw new Error(`Resend rejected the ${label}: ${error.name} - ${error.message}`)
   }
 }
 
@@ -92,16 +96,27 @@ export async function sendGuestConfirmation(props: GuestEmailProps) {
       subject: "Prenotazione confermata - Corleone Guesthouse",
       html: guestTemplate(props),
     },
-    "Failed to send guest email:"
+    "guest confirmation"
   )
 }
 
 export async function sendStaffNotification(props: StaffEmailProps) {
-  const to = (process.env.STAFF_EMAIL ?? "")
+  const raw = process.env.STAFF_EMAIL
+
+  if (!raw) {
+    console.warn("STAFF_EMAIL is not set: skipping staff notification")
+    return
+  }
+
+  const to = raw
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
-  if (to.length === 0) return
+
+  if (to.length === 0) {
+    console.warn("STAFF_EMAIL contains no valid recipients: skipping staff notification")
+    return
+  }
 
   await send(
     {
@@ -109,6 +124,6 @@ export async function sendStaffNotification(props: StaffEmailProps) {
       subject: `Nuova prenotazione: ${props.guestName} - ${props.roomName}`,
       html: staffTemplate(props),
     },
-    "Failed to send staff notification:"
+    "staff notification"
   )
 }

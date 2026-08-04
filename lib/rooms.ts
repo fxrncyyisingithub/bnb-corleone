@@ -107,7 +107,13 @@ export async function getRooms(): Promise<RoomListItem[]> {
     .select("id, slug, name, image_url")
     .order("name")
 
-  if (error || !data?.length) {
+  if (error) {
+    console.error("Failed to load rooms, serving fallback list:", error)
+    return FALLBACK_ROOMS
+  }
+
+  if (!data.length) {
+    console.warn("No rooms returned from the database, serving fallback list")
     return FALLBACK_ROOMS
   }
 

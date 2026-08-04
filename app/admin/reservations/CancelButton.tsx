@@ -13,17 +13,21 @@ export default function CancelButton({ reservationId }: { reservationId: string 
 
     setLoading(true)
     try {
-      const data = await postJson<{ success?: boolean; error?: string }>(
+      const { ok, status, data } = await postJson<{ success?: boolean; error?: string }>(
         "/api/admin/cancel-reservation",
         { reservationId }
       )
-      if (data.success) {
-        router.refresh()
-      } else {
-        alert(data.error || "Errore durante la cancellazione")
+
+      if (!ok || !data?.success) {
+        console.error("Cancel reservation failed:", status, data)
+        alert(data?.error || `Errore durante la cancellazione (HTTP ${status})`)
         setLoading(false)
+        return
       }
-    } catch {
+
+      router.refresh()
+    } catch (err) {
+      console.error("Cancel reservation request could not be sent:", err)
       alert("Errore di connessione")
       setLoading(false)
     }

@@ -67,7 +67,7 @@ export default function BookingForm({ room, occupancy, bookedDates, dict, lang }
     setError(null)
 
     try {
-      const data = await postJson<{ url?: string; error?: string }>("/api/checkout", {
+      const { ok, status, data } = await postJson<{ url?: string; error?: string }>("/api/checkout", {
         roomId: room.id,
         checkIn: range.from.toISOString(),
         checkOut: range.to.toISOString(),
@@ -77,13 +77,17 @@ export default function BookingForm({ room, occupancy, bookedDates, dict, lang }
         email,
         locale: lang,
       })
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setError(data.error || dict.checkoutError)
+
+      if (!ok || !data?.url) {
+        console.error("Checkout request failed:", status, data)
+        setError(data?.error || dict.checkoutError)
         setLoading(false)
+        return
       }
-    } catch {
+
+      window.location.href = data.url
+    } catch (err) {
+      console.error("Checkout request could not be sent:", err)
       setError(dict.connectionError)
       setLoading(false)
     }

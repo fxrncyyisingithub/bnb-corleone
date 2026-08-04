@@ -46,10 +46,19 @@ export default async function OccupancyCalendar({
     .gte("check_out", format(rangeStart, "yyyy-MM-dd"))
   if (filterRoom) reservationsQuery = reservationsQuery.eq("room_id", filterRoom)
 
-  const [{ data: rooms }, { data: reservations }] = await Promise.all([
-    roomsQuery,
-    reservationsQuery,
-  ])
+  const [{ data: rooms, error: roomsError }, { data: reservations, error: reservationsError }] =
+    await Promise.all([roomsQuery, reservationsQuery])
+
+  if (roomsError || reservationsError) {
+    console.error("Failed to build the occupancy calendar:", roomsError ?? reservationsError)
+    return (
+      <div className="bg-surface-container-lowest border border-outline-variant rounded p-4 mb-8">
+        <p className="text-error text-body-sm">
+          Calendario non disponibile: {(roomsError ?? reservationsError)?.message}
+        </p>
+      </div>
+    )
+  }
 
   if (!rooms?.length) return null
 

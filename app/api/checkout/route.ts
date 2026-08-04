@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { differenceInDays } from "date-fns"
@@ -18,8 +19,14 @@ export async function POST(req: Request) {
     })
   }
 
+  let body: unknown
   try {
-    const body = await req.json()
+    body = await req.json()
+  } catch {
+    return jsonError("Corpo della richiesta non valido", 400)
+  }
+
+  try {
     const parsed = checkoutSchema.safeParse(body)
 
     if (!parsed.success) {
@@ -37,7 +44,14 @@ export async function POST(req: Request) {
       .eq("id", roomId)
       .single()
 
-    if (roomError || !room) {
+    // PGRST116 = no rows returned by .single(); anything else is a real failure
+    // and must not be reported to the guest as "room not found".
+    if (roomError && roomError.code !== "PGRST116") {
+      console.error("Failed to load room:", roomId, roomError)
+      return jsonError("Errore durante il caricamento della camera", 500)
+    }
+
+    if (!room) {
       return jsonError("Camera non trovata", 404)
     }
 
@@ -51,6 +65,7 @@ export async function POST(req: Request) {
     )
 
     if (conflictError) {
+      console.error("Availability check failed:", roomId, conflictError)
       return jsonError("Errore durante il controllo della disponibilità", 500)
     }
 
@@ -99,9 +114,19 @@ export async function POST(req: Request) {
       },
     })
 
+    if (!session.url) {
+      console.error("Stripe session created without a checkout URL:", session.id)
+      return jsonError("Impossibile avviare il pagamento. Riprova.", 502)
+    }
+
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error("Checkout error:", error)
+
+    if (error instanceof Stripe.errors.StripeError) {
+      return jsonError("Impossibile avviare il pagamento. Riprova.", 502)
+    }
+
     return jsonError(INTERNAL_ERROR, 500)
   }
 }

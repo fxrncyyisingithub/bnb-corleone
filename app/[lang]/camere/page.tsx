@@ -61,5 +61,3 @@ export default async function Camere({ params }: { params: LocaleParams }) {
     </div>
   );
 }
-// i just made this comment for fun idk maybe i'll remove it later, it was to trigger build soo 
-// why is cursor so full of ai, its supposed to be an IDE, not a chatbot am i right?
