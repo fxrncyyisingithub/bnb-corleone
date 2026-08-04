@@ -32,10 +32,9 @@ export default async function RoomPage({ params }: { params: Promise<{ lang: str
   room.price = Number(room.price)
 
   const { data: reservations, error: reservationsError } = await supabase
-    .from("reservations")
+    .from("reservation_availability")
     .select("check_in, check_out")
     .eq("room_id", room.id)
-    .eq("status", "paid")
 
   // Swallowing this would render every night as available and let guests pay for
   // dates that are already booked.

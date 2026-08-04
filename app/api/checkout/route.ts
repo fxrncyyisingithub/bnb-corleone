@@ -91,7 +91,7 @@ export async function POST(req: Request) {
               name: `Prenotazione: Camera ${room.name}`,
               description: `${new Date(checkIn).toLocaleDateString(locale)} - ${new Date(checkOut).toLocaleDateString(locale)} (${adults} adulti${bambini ? `, ${bambini} bambini` : ""})`,
             },
-            unit_amount: totalPrice * 100,
+            unit_amount: Math.round(totalPrice * 100),
           },
           quantity: 1,
         },
