@@ -65,17 +65,17 @@ describe("sendGuestConfirmation", () => {
     expect(payload.html).toContain("01/09/2026")
   })
 
-  it("swallows send failures", async () => {
+  it("throws when Resend rejects the send", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test")
-    sendMock.mockImplementation(async () => {
-      throw new Error("resend down")
-    })
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+    sendMock.mockImplementation(async () => ({
+      data: null,
+      error: { name: "validation_error", message: "invalid recipient" },
+    }))
     const { sendGuestConfirmation } = await importEmail()
 
-    await expect(sendGuestConfirmation(guestProps)).resolves.toBeUndefined()
-    expect(consoleError).toHaveBeenCalled()
-    consoleError.mockRestore()
+    await expect(sendGuestConfirmation(guestProps)).rejects.toThrow(
+      "Resend rejected the guest confirmation: validation_error - invalid recipient"
+    )
   })
 })
 
@@ -83,22 +83,28 @@ describe("sendStaffNotification", () => {
   beforeEach(resetSendMock)
   afterEach(() => vi.unstubAllEnvs())
 
-  it("does nothing without STAFF_EMAIL", async () => {
+  it("warns and skips without STAFF_EMAIL", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test")
     vi.stubEnv("STAFF_EMAIL", "")
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {})
     const { sendStaffNotification } = await importEmail()
 
     await sendStaffNotification(staffProps)
     expect(sendMock).not.toHaveBeenCalled()
+    expect(consoleWarn).toHaveBeenCalled()
+    consoleWarn.mockRestore()
   })
 
-  it("does nothing when STAFF_EMAIL holds only separators", async () => {
+  it("warns and skips when STAFF_EMAIL holds only separators", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test")
     vi.stubEnv("STAFF_EMAIL", " , , ")
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {})
     const { sendStaffNotification } = await importEmail()
 
     await sendStaffNotification(staffProps)
     expect(sendMock).not.toHaveBeenCalled()
+    expect(consoleWarn).toHaveBeenCalled()
+    consoleWarn.mockRestore()
   })
 
   it("splits comma separated recipients and trims them", async () => {
@@ -114,17 +120,17 @@ describe("sendStaffNotification", () => {
     expect(payload.html).toContain("mario@example.com")
   })
 
-  it("swallows send failures", async () => {
+  it("throws when Resend rejects the send", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test")
     vi.stubEnv("STAFF_EMAIL", "staff@example.com")
-    sendMock.mockImplementation(async () => {
-      throw new Error("resend down")
-    })
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+    sendMock.mockImplementation(async () => ({
+      data: null,
+      error: { name: "rate_limit_exceeded", message: "too many requests" },
+    }))
     const { sendStaffNotification } = await importEmail()
 
-    await expect(sendStaffNotification(staffProps)).resolves.toBeUndefined()
-    expect(consoleError).toHaveBeenCalled()
-    consoleError.mockRestore()
+    await expect(sendStaffNotification(staffProps)).rejects.toThrow(
+      "Resend rejected the staff notification: rate_limit_exceeded - too many requests"
+    )
   })
 })

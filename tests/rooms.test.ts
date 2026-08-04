@@ -88,12 +88,20 @@ describe("getRooms", () => {
   })
 
   it("returns the fallback rooms on query error or empty result", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {})
+
     mockSupabase({ data: null, error: new Error("boom") })
     const onError = await getRooms()
     expect(onError.map((room) => room.slug)).toEqual(["101", "102", "103", "104"])
+    expect(consoleError).toHaveBeenCalled()
 
     mockSupabase({ data: [], error: null })
     const onEmpty = await getRooms()
     expect(onEmpty).toEqual(onError)
+    expect(consoleWarn).toHaveBeenCalled()
+
+    consoleError.mockRestore()
+    consoleWarn.mockRestore()
   })
 })

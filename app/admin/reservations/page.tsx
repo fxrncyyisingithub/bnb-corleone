@@ -31,13 +31,20 @@ export default async function AdminReservations({
 
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError && authError.name !== "AuthSessionMissingError") {
+    console.error("Failed to verify admin session:", authError)
+  }
   if (!user) redirect("/admin/login")
 
-  const { data: rooms } = await supabase
+  const { data: rooms, error: roomsError } = await supabase
     .from("rooms")
     .select("id, slug, name")
     .order("name")
+
+  if (roomsError) {
+    console.error("Failed to load rooms for the admin filters:", roomsError)
+  }
 
   let countQuery = supabase
     .from("reservations")
@@ -67,10 +74,17 @@ export default async function AdminReservations({
     dataQuery = dataQuery.lt("check_in", filterAl)
   }
 
-  const [{ count: total }, { data: reservations, error }] = await Promise.all([
+  const [{ count: total, error: countError }, { data: reservations, error }] = await Promise.all([
     countQuery,
     dataQuery,
   ])
+
+  if (countError) {
+    console.error("Failed to count reservations:", countError)
+  }
+  if (error) {
+    console.error("Failed to load reservations:", error)
+  }
 
   const totalPages = Math.ceil((total ?? 0) / PAGE_SIZE)
 
@@ -143,7 +157,7 @@ export default async function AdminReservations({
             </button>
             {(filterRoom || filterDal || filterAl) && (
               <Link
-                href="/admin/reservations"
+                href={sp.month ? `/admin/reservations?month=${sp.month}` : "/admin/reservations"}
                 className="text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors"
               >
                 Cancella filtri
@@ -161,7 +175,14 @@ export default async function AdminReservations({
         </div>
       </details>
 
-      {error && <p className="text-error mb-4">Errore nel caricamento delle prenotazioni.</p>}
+      {error && (
+        <p className="text-error mb-4">
+          Errore nel caricamento delle prenotazioni: {error.message}
+        </p>
+      )}
+      {roomsError && (
+        <p className="text-error mb-4">Errore nel caricamento delle camere: {roomsError.message}</p>
+      )}
 
       <div className="overflow-x-auto bg-surface-container-lowest border border-outline-variant rounded">
         <table className="w-full text-left border-collapse">
@@ -212,17 +233,17 @@ export default async function AdminReservations({
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-body-sm text-secondary">
-          {total !== null ? `${total} totali` : ""}
+          {countError ? "Totale non disponibile" : total !== null ? `${total} totali` : ""}
         </span>
         {totalPages > 1 && (
           <div className="flex items-center gap-4">
             {currentPage > 1 ? (
-              <a
+              <Link
                 href={qs({ page: String(currentPage - 1) })}
                 className="text-label-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
               >
                 ← Precedente
-              </a>
+              </Link>
             ) : (
               <span className="text-label-sm uppercase tracking-widest text-outline">← Precedente</span>
             )}
@@ -230,12 +251,12 @@ export default async function AdminReservations({
               {currentPage} / {totalPages}
             </span>
             {currentPage < totalPages ? (
-              <a
+              <Link
                 href={qs({ page: String(currentPage + 1) })}
                 className="text-label-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
               >
                 Successiva →
-              </a>
+              </Link>
             ) : (
               <span className="text-label-sm uppercase tracking-widest text-outline">Successiva →</span>
             )}

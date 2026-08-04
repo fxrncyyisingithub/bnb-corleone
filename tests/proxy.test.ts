@@ -112,6 +112,31 @@ describe("admin auth guard", () => {
     expect(locationOf(response)).toBe("/admin/reservations")
   })
 
+  it("logs unexpected auth errors but still fails closed", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: null },
+      error: { name: "AuthRetryableFetchError", message: "network down" },
+    })
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const response = await proxy(request("/admin/reservations"))
+    expect(locationOf(response)).toBe("/admin/login")
+    expect(consoleError).toHaveBeenCalled()
+    consoleError.mockRestore()
+  })
+
+  it("does not log a missing session as an error", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: null },
+      error: { name: "AuthSessionMissingError", message: "no session" },
+    })
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    await proxy(request("/admin/reservations"))
+    expect(consoleError).not.toHaveBeenCalled()
+    consoleError.mockRestore()
+  })
+
   it("lets authenticated users through to admin pages", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } })
     const response = await proxy(request("/admin/reservations"))
