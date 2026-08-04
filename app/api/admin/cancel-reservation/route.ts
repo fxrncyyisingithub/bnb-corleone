@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
-import { stripe } from "@/lib/stripe"
+import { refundCheckoutSession, stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { jsonError } from "@/lib/api-response"
 
 export async function POST(req: Request) {
   const authClient = await createClient()
@@ -10,24 +11,24 @@ export async function POST(req: Request) {
 
   if (authError) {
     console.error("Failed to verify admin session:", authError)
-    return NextResponse.json({ error: "Non autorizzato" }, { status: 401 })
+    return jsonError("Non autorizzato", 401)
   }
 
   if (!user) {
-    return NextResponse.json({ error: "Non autorizzato" }, { status: 401 })
+    return jsonError("Non autorizzato", 401)
   }
 
   let body: unknown
   try {
     body = await req.json()
   } catch {
-    return NextResponse.json({ error: "Corpo della richiesta non valido" }, { status: 400 })
+    return jsonError("Corpo della richiesta non valido", 400)
   }
 
   const reservationId = (body as { reservationId?: unknown } | null)?.reservationId
 
   if (!reservationId || typeof reservationId !== "string") {
-    return NextResponse.json({ error: "Missing reservationId" }, { status: 400 })
+    return jsonError("Missing reservationId", 400)
   }
 
   const supabase = createAdminClient()
@@ -41,18 +42,15 @@ export async function POST(req: Request) {
   // PGRST116 = no rows returned; any other error is a backend failure.
   if (fetchError && fetchError.code !== "PGRST116") {
     console.error("Failed to load reservation:", reservationId, fetchError)
-    return NextResponse.json(
-      { error: "Errore nel caricamento della prenotazione" },
-      { status: 500 }
-    )
+    return jsonError("Errore nel caricamento della prenotazione", 500)
   }
 
   if (!reservation) {
-    return NextResponse.json({ error: "Prenotazione non trovata" }, { status: 404 })
+    return jsonError("Prenotazione non trovata", 404)
   }
 
   if (reservation.status !== "paid") {
-    return NextResponse.json({ error: "Solo prenotazioni pagate possono essere rimborsate" }, { status: 400 })
+    return jsonError("Solo prenotazioni pagate possono essere rimborsate", 400)
   }
 
   let refunded = false
@@ -60,20 +58,17 @@ export async function POST(req: Request) {
   if (reservation.stripe_session_id) {
     try {
       const session = await stripe.checkout.sessions.retrieve(reservation.stripe_session_id)
-      const paymentIntent = session.payment_intent
+      refunded = await refundCheckoutSession(session)
 
-      if (typeof paymentIntent === "string") {
-        await stripe.refunds.create({ payment_intent: paymentIntent })
-        refunded = true
-      } else {
+      if (!refunded) {
         console.error(
           "Reservation has no payment intent, refund skipped:",
           reservationId,
           reservation.stripe_session_id
         )
-        return NextResponse.json(
-          { error: "Pagamento non rimborsabile automaticamente. Rimborsa da Stripe." },
-          { status: 502 }
+        return jsonError(
+          "Pagamento non rimborsabile automaticamente. Rimborsa da Stripe.",
+          502
         )
       }
     } catch (error) {
@@ -83,7 +78,7 @@ export async function POST(req: Request) {
           ? `Rimborso Stripe non riuscito: ${error.message}`
           : "Rimborso Stripe non riuscito"
       // The reservation is left untouched so the refund can be retried.
-      return NextResponse.json({ error: message }, { status: 502 })
+      return jsonError(message, 502)
     }
   }
 
@@ -99,13 +94,11 @@ export async function POST(req: Request) {
         : `Failed to delete reservation ${reservationId}:`,
       deleteError
     )
-    return NextResponse.json(
-      {
-        error: refunded
-          ? "Rimborso effettuato, ma la prenotazione non è stata eliminata. Riprova."
-          : "Errore nell'eliminazione della prenotazione",
-      },
-      { status: 500 }
+    return jsonError(
+      refunded
+        ? "Rimborso effettuato, ma la prenotazione non è stata eliminata. Riprova."
+        : "Errore nell'eliminazione della prenotazione",
+      500
     )
   }
 

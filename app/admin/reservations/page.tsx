@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { format } from "date-fns"
+import { formatDate, formatDateTime } from "@/lib/format"
+import { applyReservationFilters } from "@/lib/reservations"
 import { Metadata } from "next"
 import CancelButton from "./CancelButton"
 import StatsCards from "./StatsCards"
@@ -46,33 +48,24 @@ export default async function AdminReservations({
     console.error("Failed to load rooms for the admin filters:", roomsError)
   }
 
-  let countQuery = supabase
-    .from("reservations")
-    .select("*", { count: "exact", head: true })
+  const filters = { roomId: filterRoom, from: filterDal, to: filterAl }
 
-  let dataQuery = supabase
-    .from("reservations")
-    .select(`
+  const countQuery = applyReservationFilters(
+    supabase.from("reservations").select("*", { count: "exact", head: true }),
+    filters
+  )
+
+  const dataQuery = applyReservationFilters(
+    supabase
+      .from("reservations")
+      .select(`
       *,
       rooms ( name )
     `)
-    .order("created_at", { ascending: false })
-    .range(rangeFrom, rangeTo)
-
-  if (filterRoom) {
-    countQuery = countQuery.eq("room_id", filterRoom)
-    dataQuery = dataQuery.eq("room_id", filterRoom)
-  }
-  if (filterDal && filterAl) {
-    countQuery = countQuery.lt("check_in", filterAl).gt("check_out", filterDal)
-    dataQuery = dataQuery.lt("check_in", filterAl).gt("check_out", filterDal)
-  } else if (filterDal) {
-    countQuery = countQuery.gt("check_out", filterDal)
-    dataQuery = dataQuery.gt("check_out", filterDal)
-  } else if (filterAl) {
-    countQuery = countQuery.lt("check_in", filterAl)
-    dataQuery = dataQuery.lt("check_in", filterAl)
-  }
+      .order("created_at", { ascending: false })
+      .range(rangeFrom, rangeTo),
+    filters
+  )
 
   const [{ count: total, error: countError }, { data: reservations, error }] = await Promise.all([
     countQuery,
@@ -201,7 +194,7 @@ export default async function AdminReservations({
             {reservations?.map((res) => (
               <tr key={res.id} className="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
                 <td className="p-4 text-body-md text-primary">
-                  {format(new Date(res.created_at), "dd/MM/yyyy HH:mm")}
+                  {formatDateTime(res.created_at)}
                 </td>
                 <td className="p-4">
                   <div className="text-body-md font-semibold text-primary">{res.guest_name}</div>
@@ -209,7 +202,7 @@ export default async function AdminReservations({
                 </td>
                 <td className="p-4 text-body-md text-primary">{res.rooms?.name}</td>
                 <td className="p-4 text-body-md text-primary">
-                  {format(new Date(res.check_in), "dd/MM/yyyy")} - {format(new Date(res.check_out), "dd/MM/yyyy")}
+                  {formatDate(res.check_in)} - {formatDate(res.check_out)}
                 </td>
                 <td className="p-4 text-body-md text-primary font-semibold">€{res.total_price}</td>
                 <td className="p-4">

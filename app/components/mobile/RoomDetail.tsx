@@ -1,37 +1,15 @@
 import BookingForm from "@/app/components/BookingForm"
+import type { BookableRoom, BookingDict } from "@/app/components/BookingForm"
 import ImageGallery from "@/app/components/ImageGallery"
 import { User, CreditCard } from "lucide-react"
 import type { Locale } from "@/lib/locales"
-import type { OccupancyOption } from "@/lib/rooms"
-
-type Room = {
-  id: string
-  name: string
-  price: number
-  capacity: number
-}
+import { maxAdults, type OccupancyOption } from "@/lib/rooms"
 
 type Dict = {
   cameraLabel: string
   maxGuestsMobile: string
   pricePerPerson: string
   title: string
-}
-
-type BookingDict = {
-  adulti: string
-  nome: string
-  email: string
-  dateError: string
-  payNow: string
-  waiting: string
-  nights: string
-  adultiLabel: string
-  adultSingular: string
-  childSingular: string
-  childPlural: string
-  connectionError: string
-  checkoutError: string
 }
 
 export default function MobileRoomDetail({
@@ -43,7 +21,7 @@ export default function MobileRoomDetail({
   bookingDict,
   lang,
 }: {
-  room: Room
+  room: BookableRoom
   occupancy: OccupancyOption[]
   images: string[]
   bookedDates: string[]
@@ -51,7 +29,7 @@ export default function MobileRoomDetail({
   bookingDict: BookingDict
   lang: Locale
 }) {
-  const maxCapacity = Math.max(...occupancy.map(o => o.adults))
+  const maxCapacity = maxAdults(occupancy)
   return (
     <div className="flex-grow pb-20 px-margin-mobile w-full pt-6">
       <ImageGallery images={images} name={room.name} />

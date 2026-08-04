@@ -3,16 +3,12 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
-import { format } from "date-fns"
+import { formatDate } from "@/lib/format"
 import { CheckCircle } from "lucide-react"
-import { getDictionary } from "@/lib/dictionary"
-import { isLocale } from "@/lib/locales"
+import { localeMetadata, resolveLocale } from "@/lib/page-locale"
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string; session_id: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const locale = isLocale(lang) ? lang : "it";
-  const dict = await getDictionary(locale);
-  return { title: dict.success.title };
+export function generateMetadata({ params }: { params: Promise<{ lang: string; session_id: string }> }): Promise<Metadata> {
+  return localeMetadata(params, (dict) => ({ title: dict.success.title }));
 }
 
 export default async function Success({
@@ -20,10 +16,8 @@ export default async function Success({
 }: {
   params: Promise<{ lang: string; session_id: string }>
 }) {
-  const { lang, session_id } = await params
-  if (!isLocale(lang)) notFound()
-
-  const dict = await getDictionary(lang)
+  const { session_id } = await params
+  const { lang, dict } = await resolveLocale(params)
 
   let session: Stripe.Checkout.Session
   try {
@@ -63,7 +57,7 @@ export default async function Success({
           {checkIn && checkOut && (
             <p>
               <span className="font-semibold text-primary">{dict.success.dates}</span>{" "}
-              {format(checkIn, "dd/MM/yyyy")} – {format(checkOut, "dd/MM/yyyy")}
+              {formatDate(checkIn)} – {formatDate(checkOut)}
             </p>
           )}
         </div>
