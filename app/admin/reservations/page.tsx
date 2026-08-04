@@ -157,7 +157,7 @@ export default async function AdminReservations({
             </button>
             {(filterRoom || filterDal || filterAl) && (
               <Link
-                href="/admin/reservations"
+                href={sp.month ? `/admin/reservations?month=${sp.month}` : "/admin/reservations"}
                 className="text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors"
               >
                 Cancella filtri
@@ -238,12 +238,12 @@ export default async function AdminReservations({
         {totalPages > 1 && (
           <div className="flex items-center gap-4">
             {currentPage > 1 ? (
-              <a
+              <Link
                 href={qs({ page: String(currentPage - 1) })}
                 className="text-label-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
               >
                 ← Precedente
-              </a>
+              </Link>
             ) : (
               <span className="text-label-sm uppercase tracking-widest text-outline">← Precedente</span>
             )}
@@ -251,12 +251,12 @@ export default async function AdminReservations({
               {currentPage} / {totalPages}
             </span>
             {currentPage < totalPages ? (
-              <a
+              <Link
                 href={qs({ page: String(currentPage + 1) })}
                 className="text-label-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
               >
                 Successiva →
-              </a>
+              </Link>
             ) : (
               <span className="text-label-sm uppercase tracking-widest text-outline">Successiva →</span>
             )}
