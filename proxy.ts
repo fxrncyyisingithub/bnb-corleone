@@ -4,6 +4,7 @@ import Negotiator from "negotiator"
 import { match } from "@formatjs/intl-localematcher"
 import { getDeviceType } from "./lib/detect-device"
 import { locales, defaultLocale, isLocale } from "./lib/locales"
+import { requireEnv } from "./lib/env"
 
 const LOCALE_COOKIE = "NEXT_LOCALE"
 
@@ -69,8 +70,8 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = withHeaders(NextResponse.next({ request }), deviceType)
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    requireEnv("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL),
+    requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
     {
       cookies: {
         getAll() {
@@ -89,7 +90,14 @@ export async function proxy(request: NextRequest) {
 
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser()
+
+  // Auth failures leave `user` null, which fails closed on /admin — log them so an
+  // outage is not mistaken for an expired session.
+  if (authError && authError.name !== "AuthSessionMissingError") {
+    console.error("Supabase auth check failed in proxy:", authError)
+  }
 
   if (
     request.nextUrl.pathname.startsWith("/admin") &&

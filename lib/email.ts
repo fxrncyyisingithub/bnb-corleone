@@ -21,7 +21,10 @@ type StaffEmailProps = {
 
 function getResend() {
   const key = process.env.RESEND_API_KEY
-  if (!key) return null
+  if (!key) {
+    console.warn("RESEND_API_KEY is not set: skipping email delivery")
+    return null
+  }
   return new Resend(key)
 }
 const baseUrl = process.env.NEXT_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
@@ -199,35 +202,47 @@ function staffTemplate({ guestName, guestEmail, roomName, checkIn, checkOut, tot
 export async function sendGuestConfirmation(props: GuestEmailProps) {
   const r = getResend()
   if (!r) return
-  try {
-    await r.emails.send({
-      from: FROM,
-      to: props.email,
-      subject: "Prenotazione confermata - Corleone Guesthouse",
-      html: guestTemplate(props),
-    })
-  } catch (err) {
-    console.error("Failed to send guest email:", err)
+
+  const { error } = await r.emails.send({
+    from: FROM,
+    to: props.email,
+    subject: "Prenotazione confermata - Corleone Guesthouse",
+    html: guestTemplate(props),
+  })
+
+  if (error) {
+    throw new Error(`Resend rejected the guest confirmation: ${error.name} - ${error.message}`)
   }
 }
 
 export async function sendStaffNotification(props: StaffEmailProps) {
   const raw = process.env.STAFF_EMAIL
   const r = getResend()
-  if (!r || !raw) return
+  if (!r) return
+
+  if (!raw) {
+    console.warn("STAFF_EMAIL is not set: skipping staff notification")
+    return
+  }
+
   const to = raw
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
-  if (to.length === 0) return
-  try {
-    await r.emails.send({
-      from: FROM,
-      to,
-      subject: `Nuova prenotazione: ${props.guestName} - ${props.roomName}`,
-      html: staffTemplate(props),
-    })
-  } catch (err) {
-    console.error("Failed to send staff notification:", err)
+
+  if (to.length === 0) {
+    console.warn("STAFF_EMAIL contains no valid recipients: skipping staff notification")
+    return
+  }
+
+  const { error } = await r.emails.send({
+    from: FROM,
+    to,
+    subject: `Nuova prenotazione: ${props.guestName} - ${props.roomName}`,
+    html: staffTemplate(props),
+  })
+
+  if (error) {
+    throw new Error(`Resend rejected the staff notification: ${error.name} - ${error.message}`)
   }
 }

@@ -80,14 +80,18 @@ export default function BookingForm({ room, occupancy, bookedDates, dict, lang }
           locale: lang,
         }),
       })
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setError(data.error || dict.checkoutError)
+      const data = await res.json().catch(() => null)
+
+      if (!res.ok || !data?.url) {
+        console.error("Checkout request failed:", res.status, data)
+        setError(data?.error || dict.checkoutError)
         setLoading(false)
+        return
       }
-    } catch {
+
+      window.location.href = data.url
+    } catch (err) {
+      console.error("Checkout request could not be sent:", err)
       setError(dict.connectionError)
       setLoading(false)
     }

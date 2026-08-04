@@ -49,6 +49,3 @@ bun.lock
 
 # npm
 package-lock.json
-
-# agents.md
-AGENTS.md
