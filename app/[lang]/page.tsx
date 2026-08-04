@@ -2,30 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import hero from "@/immagini/corleone.png";
-import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
-import { getDictionary } from "@/lib/dictionary";
-import { isLocale } from "@/lib/locales";
-import { notFound } from "next/navigation";
+import { localeMetadata, resolveLocalePage, type LocaleParams } from "@/lib/page-locale";
 import MobileHome from "@/app/components/mobile/Home";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const locale = isLocale(lang) ? lang : "it";
-  const dict = await getDictionary(locale);
-  return {
+export function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+  return localeMetadata(params, (dict) => ({
     title: dict.site.name,
     description: dict.site.description,
-  };
+  }));
 }
 
-export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
+export default async function Home({ params }: { params: LocaleParams }) {
+  const { lang, dict, isMobile } = await resolveLocalePage(params);
 
-  const dict = await getDictionary(lang);
-  const deviceType = await getRequestDeviceType();
-
-  if (isMobileDevice(deviceType)) {
+  if (isMobile) {
     return <MobileHome dict={dict.home} lang={lang} />;
   }
 

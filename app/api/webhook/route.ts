@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server"
 import type Stripe from "stripe"
-import { stripe } from "@/lib/stripe"
+import { refundCheckoutSession, stripe } from "@/lib/stripe"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendGuestConfirmation, sendStaffNotification } from "@/lib/email"
-import { format } from "date-fns"
+import { formatDate } from "@/lib/format"
+import { findOverlappingReservations } from "@/lib/reservations"
+import { jsonError } from "@/lib/api-response"
 
 export const maxDuration = 30
 
@@ -12,12 +14,12 @@ export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature")
 
   if (!sig) {
-    return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 })
+    return jsonError("Missing stripe-signature header", 400)
   }
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
   if (!webhookSecret) {
-    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 })
+    return jsonError("Webhook not configured", 500)
   }
 
   let event: Stripe.Event
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error"
     console.error("Webhook signature verification failed:", message)
-    return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 })
+    return jsonError(`Webhook Error: ${message}`, 400)
   }
 
   if (event.type === "checkout.session.completed") {
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
 
     if (!metadata?.roomId || !metadata.checkIn || !metadata.checkOut || !metadata.guests || !metadata.totalPrice) {
       console.error("Webhook missing required metadata:", session.id)
-      return NextResponse.json({ error: "Invalid session metadata" }, { status: 400 })
+      return jsonError("Invalid session metadata", 400)
     }
 
     const supabase = createAdminClient()
@@ -51,23 +53,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true, duplicate: true })
     }
 
-    const { data: conflicts } = await supabase
-      .from("reservations")
-      .select("id")
-      .eq("room_id", metadata.roomId)
-      .eq("status", "paid")
-      .lt("check_in", metadata.checkOut)
-      .gt("check_out", metadata.checkIn)
+    const { data: conflicts } = await findOverlappingReservations(supabase, {
+      roomId: metadata.roomId,
+      checkIn: metadata.checkIn,
+      checkOut: metadata.checkOut,
+    })
 
     if (conflicts && conflicts.length > 0) {
       console.error("Overlapping reservation detected, refunding:", session.id)
-      const paymentIntent = session.payment_intent
-      if (typeof paymentIntent === "string") {
-        await stripe.refunds.create({
-          payment_intent: paymentIntent,
-        }).catch((e) => console.error("Refund failed:", e))
-      }
-      return NextResponse.json({ error: "Date non più disponibili, rimborso effettuato." }, { status: 409 })
+      await refundCheckoutSession(session).catch((e) => console.error("Refund failed:", e))
+      return jsonError("Date non più disponibili, rimborso effettuato.", 409)
     }
 
     const { error } = await supabase.from("reservations").insert({
@@ -84,10 +79,9 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error("Failed to insert reservation:", error)
-      return NextResponse.json({ error: "Database Error" }, { status: 500 })
+      return jsonError("Database Error", 500)
     }
 
-    const fmtDate = (d: string) => format(new Date(d), "dd/MM/yyyy")
     const guestEmail = metadata.email ?? session.customer_email ?? ""
 
     if (guestEmail) {
@@ -95,8 +89,8 @@ export async function POST(req: Request) {
         name: metadata.name ?? "",
         email: guestEmail,
         roomName: metadata.roomName ?? "",
-        checkIn: fmtDate(metadata.checkIn),
-        checkOut: fmtDate(metadata.checkOut),
+        checkIn: formatDate(metadata.checkIn),
+        checkOut: formatDate(metadata.checkOut),
         total: metadata.totalPrice,
         sessionId: session.id,
       })
@@ -106,8 +100,8 @@ export async function POST(req: Request) {
       guestName: metadata.name ?? "",
       guestEmail,
       roomName: metadata.roomName ?? "",
-      checkIn: fmtDate(metadata.checkIn),
-      checkOut: fmtDate(metadata.checkOut),
+      checkIn: formatDate(metadata.checkIn),
+      checkOut: formatDate(metadata.checkOut),
       total: metadata.totalPrice,
     })
   }

@@ -2,27 +2,17 @@ import type { Metadata } from "next";
 import { CONTACTS } from "@/lib/contacts";
 import WhatsAppIcon from "@/app/components/WhatsAppIcon";
 import { User } from "lucide-react";
-import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
-import { getDictionary } from "@/lib/dictionary";
-import { isLocale } from "@/lib/locales";
-import { notFound } from "next/navigation";
+import { localeMetadata, resolveLocalePage, type LocaleParams } from "@/lib/page-locale";
 import MobileContatti from "@/app/components/mobile/Contatti";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const locale = isLocale(lang) ? lang : "it";
-  const dict = await getDictionary(locale);
-  return { title: dict.contatti.title };
+export function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+  return localeMetadata(params, (dict) => ({ title: dict.contatti.title }));
 }
 
-export default async function Contatti({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
+export default async function Contatti({ params }: { params: LocaleParams }) {
+  const { dict, isMobile } = await resolveLocalePage(params);
 
-  const dict = await getDictionary(lang);
-  const deviceType = await getRequestDeviceType();
-
-  if (isMobileDevice(deviceType)) {
+  if (isMobile) {
     return <MobileContatti dict={dict.contatti} />;
   }
 

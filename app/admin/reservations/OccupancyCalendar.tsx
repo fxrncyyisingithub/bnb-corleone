@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, parseISO } from "date-fns"
 import { it } from "date-fns/locale/it"
+import { eachNightBetween } from "@/lib/reservations"
 
 export default async function OccupancyCalendar({
   month,
@@ -54,12 +55,8 @@ export default async function OccupancyCalendar({
 
   const bookedSet = new Set<string>()
   for (const res of reservations ?? []) {
-    const start = new Date(res.check_in)
-    const end = new Date(res.check_out)
-    const d = new Date(start)
-    while (d < end) {
-      bookedSet.add(`${res.room_id}_${format(d, "yyyy-MM-dd")}`)
-      d.setDate(d.getDate() + 1)
+    for (const night of eachNightBetween(res.check_in, res.check_out)) {
+      bookedSet.add(`${res.room_id}_${format(night, "yyyy-MM-dd")}`)
     }
   }
 

@@ -9,15 +9,16 @@ import { de } from "date-fns/locale/de"
 import "react-day-picker/style.css"
 import type { Locale } from "@/lib/locales"
 import type { OccupancyOption } from "@/lib/rooms"
+import { postJson } from "@/lib/http"
 
-type Room = {
+export type BookableRoom = {
   id: string
   name: string
   price: number
   capacity: number
 }
 
-type Dict = {
+export type BookingDict = {
   adulti: string
   nome: string
   email: string
@@ -39,7 +40,7 @@ const dateLocales: Record<string, object> = {
   de,
 }
 
-export default function BookingForm({ room, occupancy, bookedDates, dict, lang }: { room: Room; occupancy: OccupancyOption[]; bookedDates: string[]; dict: Dict; lang: Locale }) {
+export default function BookingForm({ room, occupancy, bookedDates, dict, lang }: { room: BookableRoom; occupancy: OccupancyOption[]; bookedDates: string[]; dict: BookingDict; lang: Locale }) {
   const [range, setRange] = useState<DateRange | undefined>()
   const [selected, setSelected] = useState(0)
   const [name, setName] = useState("")
@@ -66,21 +67,16 @@ export default function BookingForm({ room, occupancy, bookedDates, dict, lang }
     setError(null)
 
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          roomId: room.id,
-          checkIn: range.from.toISOString(),
-          checkOut: range.to.toISOString(),
-          adults: occ.adults,
-          bambini: occ.bambini,
-          name,
-          email,
-          locale: lang,
-        }),
+      const data = await postJson<{ url?: string; error?: string }>("/api/checkout", {
+        roomId: room.id,
+        checkIn: range.from.toISOString(),
+        checkOut: range.to.toISOString(),
+        adults: occ.adults,
+        bambini: occ.bambini,
+        name,
+        email,
+        locale: lang,
       })
-      const data = await res.json()
       if (data.url) {
         window.location.href = data.url
       } else {

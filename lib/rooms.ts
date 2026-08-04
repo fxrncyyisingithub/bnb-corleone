@@ -62,6 +62,10 @@ export const ROOM_OCCUPANCY: Record<string, OccupancyOption[]> = {
   ],
 }
 
+export function maxAdults(occupancy: OccupancyOption[]): number {
+  return Math.max(...occupancy.map((option) => option.adults))
+}
+
 const img = (slug: string, file: string) => `${ROOM_IMAGE_BASE}/${slug}/${file}`
 
 export const ROOM_IMAGES: Record<string, string[]> = {

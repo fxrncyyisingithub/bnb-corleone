@@ -2,28 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getRooms } from "@/lib/rooms";
-import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
-import { getDictionary } from "@/lib/dictionary";
-import { isLocale } from "@/lib/locales";
-import { notFound } from "next/navigation";
+import { localeMetadata, resolveLocalePage, type LocaleParams } from "@/lib/page-locale";
 import MobileCamere from "@/app/components/mobile/Camere";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const locale = isLocale(lang) ? lang : "it";
-  const dict = await getDictionary(locale);
-  return { title: dict.camere.title };
+export function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+  return localeMetadata(params, (dict) => ({ title: dict.camere.title }));
 }
 
-export default async function Camere({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
-
-  const dict = await getDictionary(lang);
+export default async function Camere({ params }: { params: LocaleParams }) {
+  const { lang, dict, isMobile } = await resolveLocalePage(params);
   const rooms = await getRooms();
-  const deviceType = await getRequestDeviceType();
 
-  if (isMobileDevice(deviceType)) {
+  if (isMobile) {
     return <MobileCamere rooms={rooms} dict={dict.camere} lang={lang} />;
   }
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { postJson } from "@/lib/http"
 
 export default function CancelButton({ reservationId }: { reservationId: string }) {
   const [loading, setLoading] = useState(false)
@@ -12,12 +13,10 @@ export default function CancelButton({ reservationId }: { reservationId: string 
 
     setLoading(true)
     try {
-      const res = await fetch("/api/admin/cancel-reservation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reservationId }),
-      })
-      const data = await res.json()
+      const data = await postJson<{ success?: boolean; error?: string }>(
+        "/api/admin/cancel-reservation",
+        { reservationId }
+      )
       if (data.success) {
         router.refresh()
       } else {
