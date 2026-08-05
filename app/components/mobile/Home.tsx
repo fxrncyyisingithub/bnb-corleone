@@ -1,7 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
-import hero from "@/immagini/corleone.png"
 import type { Locale } from "@/lib/locales"
+
+const heroSrc = "/immagini/corleone"
 
 type Dict = {
   heroTitle: string
@@ -17,7 +18,7 @@ export default function MobileHome({ dict, lang }: { dict: Dict; lang: Locale })
       <section className="relative h-[85vh] w-full flex flex-col justify-end p-margin-mobile">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
-            src={hero}
+            src={heroSrc}
             alt="Architettura minimalista"
             fill
             priority

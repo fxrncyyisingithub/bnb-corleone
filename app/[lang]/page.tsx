@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import hero from "@/immagini/corleone.png";
 import { getRequestDeviceType, isMobileDevice } from "@/lib/device";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale } from "@/lib/locales";
 import { notFound } from "next/navigation";
 import MobileHome from "@/app/components/mobile/Home";
+
+const heroSrc = "/immagini/corleone";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -34,7 +35,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <section className="relative h-[80vh] w-full flex flex-col justify-end p-margin-desktop">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
-            src={hero}
+            src={heroSrc}
             alt="Architettura minimalista"
             fill
             priority

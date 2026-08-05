@@ -51,4 +51,4 @@ bun.lock
 package-lock.json
 
 # agents.md
-AGENTS.md
+AGENTS.md.idea/
