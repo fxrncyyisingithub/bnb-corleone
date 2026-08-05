@@ -29,6 +29,7 @@ export default async function Home({ params }: { params: LocaleParams }) {
             alt="Architettura minimalista"
             fill
             priority
+            unoptimized
             className="object-cover filter grayscale contrast-125 brightness-90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
