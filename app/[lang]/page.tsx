@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import hero from "@/immagini/corleone.png";
 import { localeMetadata, resolveLocalePage, type LocaleParams } from "@/lib/page-locale";
 import MobileHome from "@/app/components/mobile/Home";
+
+const heroSrc = "/immagini/corleone";
 
 export function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   return localeMetadata(params, (dict) => ({
@@ -24,7 +25,7 @@ export default async function Home({ params }: { params: LocaleParams }) {
       <section className="relative h-[80vh] w-full flex flex-col justify-end p-margin-desktop">
         <div className="absolute inset-0 z-[-1] overflow-hidden">
           <Image
-            src={hero}
+            src={heroSrc}
             alt="Architettura minimalista"
             fill
             priority
