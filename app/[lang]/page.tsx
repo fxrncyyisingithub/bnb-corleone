@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { localeMetadata, resolveLocalePage, type LocaleParams } from "@/lib/page-locale";
 import MobileHome from "@/app/components/mobile/Home";
 
-const heroSrc = "/immagini/corleone";
+const heroSrc = "/immagini/corleone.webp";
 
 export function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   return localeMetadata(params, (dict) => ({

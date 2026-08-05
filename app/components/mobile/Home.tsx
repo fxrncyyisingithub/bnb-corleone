@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Locale } from "@/lib/locales"
 
-const heroSrc = "/immagini/corleone"
+const heroSrc = "/immagini/corleone.webp"
 
 type Dict = {
   heroTitle: string
